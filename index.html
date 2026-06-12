@@ -205,7 +205,233 @@ const DRIVE_BASE = 'https://www.googleapis.com/drive/v3';
 // ═══════════════════════════════════════════
 // ESTADO
 // ═══════════════════════════════════════════
-let imoveis   = JSON.parse(localStorage.getItem('differi_imoveis') || '[]');
+// Imóveis pré-cadastrados das construtoras
+const IMOVEIS_PRELOADED = [
+  // H-STATION
+  {id:'hstation_alti',source:'construtora',nome:'Alti H-Station',bairro:'Altiplano',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:3500000,m2:'353',quartos:'4',vagas:'4',entrega:'Jun/2028',desc:'Torre residencial de alto padrão no Altiplano. 37 residências exclusivas, 1 apto por andar. Piscina, spa, sauna, espaço gourmet e 155 vagas.',foto:'https://hstationincorporacao.com.br/wp-content/uploads/2021/01/alti-fachada.jpg',book:'https://hstationincorporacao.com.br/empreendimento/alti/',tabela:'',plantas:'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',fotos:'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',driveUrl:'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',wpp:'5583986001234',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_corales',source:'construtora',nome:'Corales Boutique Residence',bairro:'Camboinha',cidade:'Cabedelo',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'14 residências únicas pé na areia com vista panorâmica de Areia Vermelha. Gastrolobby, piscina, spa, academia, pool bar e serviços de hotel de luxo.',foto:'https://hstationincorporacao.com.br/wp-content/uploads/2022/02/DJI_20251105103552_0130_D-2.jpg',book:'https://hstationincorporacao.com.br/wp-content/uploads/2022/02/CORALES-Book.pdf',tabela:'',plantas:'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',fotos:'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',driveUrl:'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',wpp:'5583986001234',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_omni',source:'construtora',nome:'OMNI Life & Health',bairro:'Manaíra',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station / Massai',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Mixed-use pioneiro no Brasil: shopping médico, empresarial e residencial. Novo conceito de saúde e bem-estar em Manaíra.',foto:'https://hstationincorporacao.com.br/wp-content/uploads/2021/01/WhatsApp-Image-2021-01-22-at-11.46.28.jpeg',book:'https://hstationincorporacao.com.br/empreendimento/omni-life-health/',tabela:'',plantas:'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',fotos:'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',driveUrl:'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',wpp:'5583986001234',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_lelabo',source:'construtora',nome:'Le Labo',bairro:'Jardim Oceania',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empresarial H-Station em Jardim Oceania. Espaços de trabalho modernos e funcionais.',foto:'',book:'https://hstationincorporacao.com.br/empreendimento/le-labo/',tabela:'',plantas:'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',fotos:'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',driveUrl:'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',wpp:'5583986001234',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_ore',source:'construtora',nome:'Oré Residencial',bairro:'Cabo Branco',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Residencial H-Station em Cabo Branco. Alto padrão com localização privilegiada.',foto:'',book:'https://hstationincorporacao.com.br/empreendimento/ore-residencial/',tabela:'',plantas:'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',fotos:'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',driveUrl:'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',wpp:'5583986001234',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_hortus',source:'construtora',nome:'Hortus',bairro:'Manaíra',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Mix building H-Station em Manaíra. Conceito inovador que integra natureza e arquitetura contemporânea.',foto:'',book:'https://hstationincorporacao.com.br/empreendimento/hortus/',tabela:'',plantas:'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',fotos:'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',driveUrl:'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',wpp:'5583986001234',createdAt:'2024-01-01T00:00:00.000Z'},
+  // TOPÁZIO CONSTRUÇÕES
+  {id:'topazio_finesse',source:'construtora',nome:'Finesse',bairro:'Jardim Oceania',cidade:'João Pessoa',categoria:'pronto',construtora:'Topázio Construções',preco:350000,m2:'39 a 87',quartos:'2',vagas:'1',entrega:'Pronto',desc:'Apenas 1 unidade disponível! 300m da praia do Bessa. Coberturas duplex com piscina privativa. 2 quartos sendo 1 suíte. Área de lazer com piscina e espaço gourmet.',foto:'https://topazioconstrucoes.com.br/wp-content/uploads/2025/01/Group-419-2.png',book:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',tabela:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',plantas:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',fotos:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',driveUrl:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',wpp:'5583994006906',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'topazio_cielo',source:'construtora',nome:'Cielo Residence',bairro:'Bessa',cidade:'João Pessoa',categoria:'lancamento',construtora:'Topázio Construções',preco:null,m2:'52,97',quartos:'3',vagas:'',entrega:'',desc:'Lançamento no Bessa! 3 quartos sendo 1 suíte ou 2 suítes. A partir de 52,97m². No bairro mais valorizado e com melhor praia para banho de João Pessoa.',foto:'',book:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',tabela:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',plantas:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',fotos:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',driveUrl:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',wpp:'5583994006906',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'topazio_aureum',source:'construtora',nome:'Aureum Flats',bairro:'Intermares',cidade:'Cabedelo',categoria:'lancamento',construtora:'Topázio Construções',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Em breve — Flats na Av. Oceano Pacífico, Intermares/Cabedelo. Vista para o mar.',foto:'',book:'https://drive.google.com/drive/folders/1y2r14D8rI9six4oz9Qyzpht8Ngl6Kts2',tabela:'https://drive.google.com/drive/folders/1y2r14D8rI9six4oz9Qyzpht8Ngl6Kts2',plantas:'',fotos:'https://drive.google.com/drive/folders/1y2r14D8rI9six4oz9Qyzpht8Ngl6Kts2',driveUrl:'https://drive.google.com/drive/folders/1y2r14D8rI9six4oz9Qyzpht8Ngl6Kts2',wpp:'5583994006906',createdAt:'2024-01-01T00:00:00.000Z'},
+  // GRUPO GP / RESERVE
+  {id:'gp_reserve_gameleiras',source:'construtora',nome:'Reserve Bosque das Gameleiras',bairro:'José Américo',cidade:'João Pessoa',categoria:'planta',construtora:'Grupo GP',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Grupo GP no José Américo. Conceito de bosque urbano com áreas verdes.',foto:'',book:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',tabela:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',plantas:'',fotos:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',driveUrl:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'gp_reserve_orquideas',source:'construtora',nome:'Reserve Bosque das Orquídeas',bairro:'José Américo',cidade:'João Pessoa',categoria:'planta',construtora:'Grupo GP',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Grupo GP no José Américo. Conceito de bosque urbano com áreas verdes e muito verde.',foto:'',book:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',tabela:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',plantas:'',fotos:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',driveUrl:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // PARQUE DA CIDADE
+  {id:'parque_cidade',source:'construtora',nome:'Parque da Cidade',bairro:'Jardim Oceania',cidade:'João Pessoa',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Grande projeto urbanístico em João Pessoa. Veja a apresentação completa.',foto:'',book:'https://pt.scribd.com/document/631699652/PROJETO-PARQUE-DA-CIDADE',tabela:'',plantas:'https://drive.google.com/drive/folders/1bfAg3qpEQaduCyKT596BrmZ6TjFp7_wk',fotos:'https://drive.google.com/drive/folders/1bfAg3qpEQaduCyKT596BrmZ6TjFp7_wk',driveUrl:'https://drive.google.com/drive/folders/1bfAg3qpEQaduCyKT596BrmZ6TjFp7_wk',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // CORAIS DO ATLÂNTICO
+  {id:'corais_atlantico',source:'construtora',nome:'Corais do Atlântico',bairro:'Bessa',cidade:'João Pessoa',categoria:'pronto',construtora:'',preco:null,m2:'',quartos:'2 ou 3',vagas:'1 ou 2',entrega:'Pronto',desc:'PRONTO PARA MORAR! 2 e 3 quartos com 1 ou 2 vagas. Vista para o mar em várias unidades. Cobertura com piscina infinita, academia e rooftop gourmet. Financiamento Caixa até 90%.',foto:'',book:'',tabela:'https://drive.google.com/drive/folders/1of6ifZ1G9T7Y0RHr6maG_Ib2Wfi-NxIr',plantas:'',fotos:'https://drive.google.com/drive/folders/1of6ifZ1G9T7Y0RHr6maG_Ib2Wfi-NxIr',driveUrl:'https://drive.google.com/drive/folders/1of6ifZ1G9T7Y0RHr6maG_Ib2Wfi-NxIr',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // MOARA
+  {id:'moara_prelancamento',source:'construtora',nome:'Moara',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Pré-lançamento Moara em João Pessoa. Seja um dos primeiros a ter acesso.',foto:'',book:'https://drive.google.com/drive/folders/11EPEvOM5VNXuWVInQSt8HtWboA5az_Ob',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/11EPEvOM5VNXuWVInQSt8HtWboA5az_Ob',driveUrl:'https://drive.google.com/drive/folders/11EPEvOM5VNXuWVInQSt8HtWboA5az_Ob',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // PORTOMAR
+  {id:'portomar',source:'construtora',nome:'Portomar Apartamentos',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Apartamentos Portomar. Veja o material completo na pasta do Drive.',foto:'',book:'https://drive.google.com/drive/folders/1Ce4JFAg6pesqh1ohECqNZ7SpuV4i2OHt',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1Ce4JFAg6pesqh1ohECqNZ7SpuV4i2OHt',driveUrl:'https://drive.google.com/drive/folders/1Ce4JFAg6pesqh1ohECqNZ7SpuV4i2OHt',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // BOTANIC
+  {id:'botanic',source:'construtora',nome:'Botanic',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'Sférica',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Lançamento Botanic pela Sférica. Conectado à natureza, novo conceito de morar em João Pessoa.',foto:'',book:'https://www.sferica.com.br/temporario/moreira_ruffos/botanic/novo',tabela:'https://drive.google.com/drive/folders/1mLKABhKQcFmk71bM1_EshAjZYkMCwWrd',plantas:'',fotos:'https://drive.google.com/drive/folders/1mLKABhKQcFmk71bM1_EshAjZYkMCwWrd',driveUrl:'https://drive.google.com/drive/folders/1mLKABhKQcFmk71bM1_EshAjZYkMCwWrd',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // AURA
+  {id:'aura_camboinha',source:'construtora',nome:'Aura Camboinha',bairro:'Camboinha',cidade:'Cabedelo',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Aura em Camboinha. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1IO9gYLhNrh-AXm4zMvvdg8uJdMDwO9WY&sz=w400',book:'https://drive.google.com/drive/folders/1bpD4PWHBKAt_AVhydxnPyO9Zk7RP1_Ji',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1bpD4PWHBKAt_AVhydxnPyO9Zk7RP1_Ji',driveUrl:'https://drive.google.com/drive/folders/1bpD4PWHBKAt_AVhydxnPyO9Zk7RP1_Ji',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'aura_loft',source:'construtora',nome:'Aura Loft',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Aura Loft. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1mWoijSqR9GTzXP1YGBzBHpT_265zamqH&sz=w400',book:'https://drive.google.com/drive/folders/12u6y3aGeYIetH973p9n-BpCrK-btG1yD',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/12u6y3aGeYIetH973p9n-BpCrK-btG1yD',driveUrl:'https://drive.google.com/drive/folders/12u6y3aGeYIetH973p9n-BpCrK-btG1yD',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // MIO FORMOSA (Nordeste Inc)
+  {id:'mio_formosa',source:'construtora',nome:'MIO Formosa',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'Nordeste Inc',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento MIO Formosa. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1efXIRyfp3N_mpipQxq_h3RNL5AVPHKYI&sz=w400',book:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',driveUrl:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // DRX
+  {id:'drx_sonatto',source:'construtora',nome:'Sonatto',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Sonatto pela DRX. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1cXPxbJ8eCbR5E5kWmaK1jq27YrVevVTD&sz=w400',book:'https://drive.google.com/drive/folders/1S2amrvKLW22T0sz_rMGiKTpeKTM5lC5o',tabela:'https://drive.google.com/drive/folders/1bZfdpmNpHlxMcb1odaglJLS0TTTizI7f',plantas:'https://drive.google.com/drive/folders/1KdG52RM1uIj3Glb73PX9xZPQyWTtTXKx',fotos:'https://drive.google.com/drive/folders/1cXPxbJ8eCbR5E5kWmaK1jq27YrVevVTD',driveUrl:'https://drive.google.com/drive/folders/1S2amrvKLW22T0sz_rMGiKTpeKTM5lC5o',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_hydepark',source:'construtora',nome:'Hyde Park',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Hyde Park pela DRX.',foto:'https://drive.google.com/thumbnail?id=1zFWtmk51yatWShDQNyWDQSkHSL3UpEyw&sz=w400',book:'https://drive.google.com/drive/folders/17n1DSX2HCvCx_fbF6bRg5Xx12Ipp4eNy',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1zFWtmk51yatWShDQNyWDQSkHSL3UpEyw',driveUrl:'https://drive.google.com/drive/folders/17n1DSX2HCvCx_fbF6bRg5Xx12Ipp4eNy',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_oceanart',source:'construtora',nome:'Ocean Art',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Ocean Art pela DRX.',foto:'https://drive.google.com/thumbnail?id=115b4IrQvol9QksOI68HKb2pihjDVkCDr&sz=w400',book:'https://drive.google.com/drive/folders/1iv6XpssaerRfurej9Zq7PtOhV1pZUBdG',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/115b4IrQvol9QksOI68HKb2pihjDVkCDr',driveUrl:'https://drive.google.com/drive/folders/1iv6XpssaerRfurej9Zq7PtOhV1pZUBdG',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_parkarbory',source:'construtora',nome:'Park Arbory',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Park Arbory pela DRX.',foto:'https://drive.google.com/thumbnail?id=1oHjiMN24DN96acXa5l8csRN9NE9xb6Mw&sz=w400',book:'https://drive.google.com/drive/folders/1WVdAcY6afjXAUVue6luhlTqjo-KGl8tk',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1oHjiMN24DN96acXa5l8csRN9NE9xb6Mw',driveUrl:'https://drive.google.com/drive/folders/1WVdAcY6afjXAUVue6luhlTqjo-KGl8tk',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_parkorizon',source:'construtora',nome:'Park Orizon',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Park Orizon pela DRX.',foto:'https://drive.google.com/thumbnail?id=1iTekJA6D7X9d_N-3XrMHHXC5kO6GiNvi&sz=w400',book:'https://drive.google.com/drive/folders/1oyV_7hrjpWN3jDvDmftBnhgWc0Ype_NH',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1iTekJA6D7X9d_N-3XrMHHXC5kO6GiNvi',driveUrl:'https://drive.google.com/drive/folders/1oyV_7hrjpWN3jDvDmftBnhgWc0Ype_NH',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_reef',source:'construtora',nome:'Reef Park',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Reef Park pela DRX.',foto:'https://drive.google.com/thumbnail?id=1akq5oBf9B6Xf5T1nWGF1rZN9r6DorGjn&sz=w400',book:'https://drive.google.com/drive/folders/1sCKXU6FNwMw-zxHwr_X4Q4Os1ZPmFHYM',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1akq5oBf9B6Xf5T1nWGF1rZN9r6DorGjn',driveUrl:'https://drive.google.com/drive/folders/1sCKXU6FNwMw-zxHwr_X4Q4Os1ZPmFHYM',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_sandpark',source:'construtora',nome:'Sand Park',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Sand Park pela DRX.',foto:'https://drive.google.com/thumbnail?id=1_Jh-llVCpaZXZC1qXkQ-AHWQc8NPkE3p&sz=w400',book:'https://drive.google.com/drive/folders/1-fnk4G2644OSdPU0H4FvcrahoJUHdZg-',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1_Jh-llVCpaZXZC1qXkQ-AHWQc8NPkE3p',driveUrl:'https://drive.google.com/drive/folders/1-fnk4G2644OSdPU0H4FvcrahoJUHdZg-',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // NORDESTE INC
+  {id:'nordesteinc',source:'construtora',nome:'Nordeste Incorporações',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'Nordeste Inc',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Portfólio de empreendimentos Nordeste Incorporações. Veja todos no Drive.',foto:'',book:'https://linktr.ee/nordesteinc',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',driveUrl:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+
+  // H-STATION
+  {id:'hstation_alti',source:'construtora',nome:'Alti H-Station',bairro:'Altiplano',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'353',quartos:'4',vagas:'4',entrega:'Jun/2028',desc:'Torre residencial de alto padrão no Altiplano. 37 residências exclusivas, 1 apto por andar. Piscina, spa, sauna, espaço gourmet e 155 vagas.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',driveUrl:'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',wpp:'558332086459',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_corales',source:'construtora',nome:'Corales Boutique Residence',bairro:'Areia Vermelha',cidade:'Cabedelo',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'14 residências únicas pé na areia com vista panorâmica definitiva de Areia Vermelha. Empreendimento boutique de altíssimo padrão.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',driveUrl:'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',wpp:'558332086459',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_omni',source:'construtora',nome:'OMNI',bairro:'Manaíra',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station / Massai',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Mixed-use pioneiro no Brasil: shopping, medical center e residencial. Novo conceito de saúde e bem-estar em Manaíra.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',driveUrl:'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',wpp:'558332086459',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_lelabo',source:'construtora',nome:'Le Labo',bairro:'Manaíra',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento H-Station em Manaíra. Veja book, tabela e plantas na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',driveUrl:'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',wpp:'558332086459',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_ore',source:'construtora',nome:'Oré',bairro:'Manaíra',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento H-Station em Manaíra. Veja book, tabela e plantas na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',driveUrl:'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',wpp:'558332086459',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'hstation_hortus',source:'construtora',nome:'Hortus',bairro:'Manaíra',cidade:'João Pessoa',categoria:'planta',construtora:'H-Station',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento H-Station em Manaíra. Veja book, tabela e plantas na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',driveUrl:'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',wpp:'558332086459',createdAt:'2024-01-01T00:00:00.000Z'},
+  // TOPÁZIO CONSTRUÇÕES
+  {id:'topazio_finesse',source:'construtora',nome:'Finesse',bairro:'Jardim Oceania',cidade:'João Pessoa',categoria:'lancamento',construtora:'Topázio Construções',preco:null,m2:'39,81',quartos:'2',vagas:'1',entrega:'',desc:'Lançamento Topázio em Jardim Oceania. Unidades a partir de 39,81m², 2 dormitórios sendo 1 suíte. Localização privilegiada próxima aos parques Parahyba.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',driveUrl:'https://drive.google.com/drive/folders/18999UY585wep3zF_vPNR25B-ALOVq-U6',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'topazio_cielo',source:'construtora',nome:'Cielo Residence',bairro:'Bessa',cidade:'João Pessoa',categoria:'lancamento',construtora:'Topázio Construções',preco:null,m2:'52,97',quartos:'3',vagas:'',entrega:'',desc:'Lançamento Topázio no Bessa. Unidades a partir de 52,97m², 3 quartos sendo 1 suíte e opção com 2 suítes. No bairro que mais cresce em João Pessoa.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',driveUrl:'https://drive.google.com/drive/folders/1-EcHvUkCZP0U3I9xQkFYVjagk6maK_ES',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'topazio_aureum',source:'construtora',nome:'Aureum Flats',bairro:'Intermares',cidade:'Cabedelo',categoria:'lancamento',construtora:'Topázio Construções',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Em breve — Flats em Intermares/Cabedelo. Veja a pasta do Drive para mais informações.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1y2r14D8rI9six4oz9Qyzpht8Ngl6Kts2',driveUrl:'https://drive.google.com/drive/folders/1y2r14D8rI9six4oz9Qyzpht8Ngl6Kts2',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // GRUPO GP / RESERVE
+  {id:'gp_reserve_gameleiras',source:'construtora',nome:'Reserve Bosque das Gameleiras',bairro:'José Américo',cidade:'João Pessoa',categoria:'planta',construtora:'Grupo GP',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Grupo GP no José Américo. Veja o material completo na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/19ILDHqImmtuDXftzICAhDVG8azLzHXfl',driveUrl:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'gp_reserve_orquideas',source:'construtora',nome:'Reserve Bosque das Orquídeas',bairro:'José Américo',cidade:'João Pessoa',categoria:'planta',construtora:'Grupo GP',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Grupo GP no José Américo. Veja o material completo na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1M4P4h7umXQ6BiQZuI9s1XfvRKn_gCp1N',driveUrl:'https://drive.google.com/drive/folders/1kgDGAsVWiI712_uraZXPyNCpFwbpEhmc',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // PARQUE DA CIDADE
+  {id:'parque_cidade',source:'construtora',nome:'Parque da Cidade',bairro:'Jardim Oceania',cidade:'João Pessoa',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Projeto Parque da Cidade — lançamento em João Pessoa. Veja o material completo no link.',foto:'',book:'https://pt.scribd.com/document/631699652/PROJETO-PARQUE-DA-CIDADE',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1bfAg3qpEQaduCyKT596BrmZ6TjFp7_wk',driveUrl:'https://drive.google.com/drive/folders/1bfAg3qpEQaduCyKT596BrmZ6TjFp7_wk',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // CORAIS DO ATLÂNTICO
+  {id:'corais_atlantico',source:'construtora',nome:'Corais do Atlântico',bairro:'',cidade:'João Pessoa',categoria:'pronto',construtora:'',preco:null,m2:'',quartos:'2 ou 3',vagas:'1 ou 2',entrega:'Pronto',desc:'PRONTO PARA MORAR! 2 e 3 quartos com 1 ou 2 vagas. Vista para o mar em várias unidades. Cobertura com piscina infinita, academia e rooftop gourmet. Financiamento Caixa até 90%.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1of6ifZ1G9T7Y0RHr6maG_Ib2Wfi-NxIr',driveUrl:'https://drive.google.com/drive/folders/1of6ifZ1G9T7Y0RHr6maG_Ib2Wfi-NxIr',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // MOARA
+  {id:'moara_prelancamento',source:'construtora',nome:'Moara',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Pré-lançamento Moara. Veja o material completo na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/11EPEvOM5VNXuWVInQSt8HtWboA5az_Ob',driveUrl:'https://drive.google.com/drive/folders/11EPEvOM5VNXuWVInQSt8HtWboA5az_Ob',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // PORTOMAR
+  {id:'portomar',source:'construtora',nome:'Portomar Apartamentos',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Apartamentos Portomar. Veja o material completo na pasta do Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1Ce4JFAg6pesqh1ohECqNZ7SpuV4i2OHt',driveUrl:'https://drive.google.com/drive/folders/1Ce4JFAg6pesqh1ohECqNZ7SpuV4i2OHt',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // BOTANIC
+  {id:'botanic',source:'construtora',nome:'Botanic',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'Sférica',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Lançamento Botanic — Sférica. Conectado à natureza, novo conceito de morar em João Pessoa.',foto:'',book:'https://www.sferica.com.br/temporario/moreira_ruffos/botanic/novo',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1mLKABhKQcFmk71bM1_EshAjZYkMCwWrd',driveUrl:'https://drive.google.com/drive/folders/1mLKABhKQcFmk71bM1_EshAjZYkMCwWrd',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // AURA
+  {id:'aura_camboinha',source:'construtora',nome:'Aura Camboinha',bairro:'Camboinha',cidade:'Cabedelo',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Aura em Camboinha. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1IO9gYLhNrh-AXm4zMvvdg8uJdMDwO9WY&sz=w400',book:'https://drive.google.com/drive/folders/1bpD4PWHBKAt_AVhydxnPyO9Zk7RP1_Ji',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1bpD4PWHBKAt_AVhydxnPyO9Zk7RP1_Ji',driveUrl:'https://drive.google.com/drive/folders/1bpD4PWHBKAt_AVhydxnPyO9Zk7RP1_Ji',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'aura_loft',source:'construtora',nome:'Aura Loft',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Aura Loft. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1mWoijSqR9GTzXP1YGBzBHpT_265zamqH&sz=w400',book:'https://drive.google.com/drive/folders/12u6y3aGeYIetH973p9n-BpCrK-btG1yD',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/12u6y3aGeYIetH973p9n-BpCrK-btG1yD',driveUrl:'https://drive.google.com/drive/folders/12u6y3aGeYIetH973p9n-BpCrK-btG1yD',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // MIO FORMOSA (Nordeste Inc)
+  {id:'mio_formosa',source:'construtora',nome:'MIO Formosa',bairro:'',cidade:'João Pessoa',categoria:'lancamento',construtora:'Nordeste Inc',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento MIO Formosa. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1efXIRyfp3N_mpipQxq_h3RNL5AVPHKYI&sz=w400',book:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',driveUrl:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // DRX
+  {id:'drx_sonatto',source:'construtora',nome:'Sonatto',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Sonatto pela DRX. Veja o material completo na pasta do Drive.',foto:'https://drive.google.com/thumbnail?id=1cXPxbJ8eCbR5E5kWmaK1jq27YrVevVTD&sz=w400',book:'https://drive.google.com/drive/folders/1S2amrvKLW22T0sz_rMGiKTpeKTM5lC5o',tabela:'https://drive.google.com/drive/folders/1bZfdpmNpHlxMcb1odaglJLS0TTTizI7f',plantas:'https://drive.google.com/drive/folders/1KdG52RM1uIj3Glb73PX9xZPQyWTtTXKx',fotos:'https://drive.google.com/drive/folders/1cXPxbJ8eCbR5E5kWmaK1jq27YrVevVTD',driveUrl:'https://drive.google.com/drive/folders/1S2amrvKLW22T0sz_rMGiKTpeKTM5lC5o',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_hydepark',source:'construtora',nome:'Hyde Park',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Hyde Park pela DRX.',foto:'https://drive.google.com/thumbnail?id=1zFWtmk51yatWShDQNyWDQSkHSL3UpEyw&sz=w400',book:'https://drive.google.com/drive/folders/17n1DSX2HCvCx_fbF6bRg5Xx12Ipp4eNy',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1zFWtmk51yatWShDQNyWDQSkHSL3UpEyw',driveUrl:'https://drive.google.com/drive/folders/17n1DSX2HCvCx_fbF6bRg5Xx12Ipp4eNy',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_oceanart',source:'construtora',nome:'Ocean Art',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Ocean Art pela DRX.',foto:'https://drive.google.com/thumbnail?id=115b4IrQvol9QksOI68HKb2pihjDVkCDr&sz=w400',book:'https://drive.google.com/drive/folders/1iv6XpssaerRfurej9Zq7PtOhV1pZUBdG',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/115b4IrQvol9QksOI68HKb2pihjDVkCDr',driveUrl:'https://drive.google.com/drive/folders/1iv6XpssaerRfurej9Zq7PtOhV1pZUBdG',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_parkarbory',source:'construtora',nome:'Park Arbory',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Park Arbory pela DRX.',foto:'https://drive.google.com/thumbnail?id=1oHjiMN24DN96acXa5l8csRN9NE9xb6Mw&sz=w400',book:'https://drive.google.com/drive/folders/1WVdAcY6afjXAUVue6luhlTqjo-KGl8tk',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1oHjiMN24DN96acXa5l8csRN9NE9xb6Mw',driveUrl:'https://drive.google.com/drive/folders/1WVdAcY6afjXAUVue6luhlTqjo-KGl8tk',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_parkorizon',source:'construtora',nome:'Park Orizon',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Park Orizon pela DRX.',foto:'https://drive.google.com/thumbnail?id=1iTekJA6D7X9d_N-3XrMHHXC5kO6GiNvi&sz=w400',book:'https://drive.google.com/drive/folders/1oyV_7hrjpWN3jDvDmftBnhgWc0Ype_NH',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1iTekJA6D7X9d_N-3XrMHHXC5kO6GiNvi',driveUrl:'https://drive.google.com/drive/folders/1oyV_7hrjpWN3jDvDmftBnhgWc0Ype_NH',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_reef',source:'construtora',nome:'Reef Park',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Reef Park pela DRX.',foto:'https://drive.google.com/thumbnail?id=1akq5oBf9B6Xf5T1nWGF1rZN9r6DorGjn&sz=w400',book:'https://drive.google.com/drive/folders/1sCKXU6FNwMw-zxHwr_X4Q4Os1ZPmFHYM',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1akq5oBf9B6Xf5T1nWGF1rZN9r6DorGjn',driveUrl:'https://drive.google.com/drive/folders/1sCKXU6FNwMw-zxHwr_X4Q4Os1ZPmFHYM',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  {id:'drx_sandpark',source:'construtora',nome:'Sand Park',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'DRX',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimento Sand Park pela DRX.',foto:'https://drive.google.com/thumbnail?id=1_Jh-llVCpaZXZC1qXkQ-AHWQc8NPkE3p&sz=w400',book:'https://drive.google.com/drive/folders/1-fnk4G2644OSdPU0H4FvcrahoJUHdZg-',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1_Jh-llVCpaZXZC1qXkQ-AHWQc8NPkE3p',driveUrl:'https://drive.google.com/drive/folders/1-fnk4G2644OSdPU0H4FvcrahoJUHdZg-',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+  // NORDESTE INC
+  {id:'nordesteinc',source:'construtora',nome:'Nordeste Incorporações',bairro:'',cidade:'João Pessoa',categoria:'planta',construtora:'Nordeste Inc',preco:null,m2:'',quartos:'',vagas:'',entrega:'',desc:'Empreendimentos Nordeste Incorporações. Veja todos os projetos no Drive.',foto:'',book:'',tabela:'',plantas:'',fotos:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',driveUrl:'https://drive.google.com/drive/folders/1EF1XjRsVSFslKcR8y65rJR8ReZqwUIOs',wpp:'',createdAt:'2024-01-01T00:00:00.000Z'},
+
+  {
+    id: 'hstation_alti',
+    source: 'construtora',
+    nome: 'Alti H-Station',
+    bairro: 'Altiplano',
+    cidade: 'João Pessoa',
+    categoria: 'planta',
+    construtora: 'H-Station',
+    preco: null,
+    m2: '353',
+    quartos: '4',
+    vagas: '4',
+    entrega: 'Jun/2028',
+    desc: 'Tower residencial de alto padrão no Altiplano Cabo Branco. 37 residências únicas com 1 apartamento por pavimento. Área de lazer completa com piscina, spa, sauna e espaços gourmet.',
+    foto: '',
+    book: '',
+    tabela: '',
+    plantas: '',
+    fotos: 'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',
+    driveUrl: 'https://drive.google.com/drive/folders/1BPmpVyIfELqpMLaXT2v1TKnHqrlNTjSD',
+    wpp: '558332086459',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'hstation_corales',
+    source: 'construtora',
+    nome: 'Corales Boutique Residence',
+    bairro: 'Areia Vermelha',
+    cidade: 'Cabedelo',
+    categoria: 'planta',
+    construtora: 'H-Station',
+    preco: null,
+    m2: '',
+    quartos: '',
+    vagas: '',
+    entrega: '',
+    desc: '14 residências únicas pé na areia, com vista panorâmica definitiva de Areia Vermelha. Um empreendimento boutique que transforma o dia a dia em celebração ao bem estar.',
+    foto: '',
+    book: '',
+    tabela: '',
+    plantas: '',
+    fotos: 'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',
+    driveUrl: 'https://drive.google.com/drive/folders/1Jw9WT7Lk0S82Itfbv4B1LW5TEpy4touL',
+    wpp: '558332086459',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'hstation_omni',
+    source: 'construtora',
+    nome: 'OMNI',
+    bairro: 'Manaíra',
+    cidade: 'João Pessoa',
+    categoria: 'planta',
+    construtora: 'H-Station / Massai',
+    preco: null,
+    m2: '',
+    quartos: '',
+    vagas: '',
+    entrega: '',
+    desc: 'Empreendimento mixed-use pioneiro no Brasil reunindo shopping, medical center e residencial. Novo conceito de bem-estar e saúde no bairro de Manaíra.',
+    foto: '',
+    book: '',
+    tabela: '',
+    plantas: '',
+    fotos: 'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',
+    driveUrl: 'https://drive.google.com/drive/folders/1OYrzUAanOOqFaVHdSUZSbY3PHMfKLOeP',
+    wpp: '558332086459',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'hstation_lelabo',
+    source: 'construtora',
+    nome: 'Le Labo',
+    bairro: 'Manaíra',
+    cidade: 'João Pessoa',
+    categoria: 'planta',
+    construtora: 'H-Station',
+    preco: null,
+    m2: '',
+    quartos: '',
+    vagas: '',
+    entrega: '',
+    desc: 'Empreendimento H-Station em Manaíra. Acesse a pasta do Drive para ver book, tabela e plantas.',
+    foto: '',
+    book: '',
+    tabela: '',
+    plantas: '',
+    fotos: 'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',
+    driveUrl: 'https://drive.google.com/drive/folders/1Re4Ix8pVMNQD4qsc1Ze1nCFbPBaO_eSn',
+    wpp: '558332086459',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'hstation_ore',
+    source: 'construtora',
+    nome: 'Oré',
+    bairro: 'Manaíra',
+    cidade: 'João Pessoa',
+    categoria: 'planta',
+    construtora: 'H-Station',
+    preco: null,
+    m2: '',
+    quartos: '',
+    vagas: '',
+    entrega: '',
+    desc: 'Empreendimento H-Station. Acesse a pasta do Drive para ver book, tabela e plantas.',
+    foto: '',
+    book: '',
+    tabela: '',
+    plantas: '',
+    fotos: 'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',
+    driveUrl: 'https://drive.google.com/drive/folders/16WZI-aYBPEH4E9BRcranpGVMSGYszfgS',
+    wpp: '558332086459',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'hstation_hortus',
+    source: 'construtora',
+    nome: 'Hortus',
+    bairro: 'Manaíra',
+    cidade: 'João Pessoa',
+    categoria: 'planta',
+    construtora: 'H-Station',
+    preco: null,
+    m2: '',
+    quartos: '',
+    vagas: '',
+    entrega: '',
+    desc: 'Empreendimento H-Station. Acesse a pasta do Drive para ver book, tabela e plantas.',
+    foto: '',
+    book: '',
+    tabela: '',
+    plantas: '',
+    fotos: 'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',
+    driveUrl: 'https://drive.google.com/drive/folders/1V3VaVrXXPcwOzghgPM3m96p9Pk8W1BQP',
+    wpp: '558332086459',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  }
+];
+
+let imoveis = JSON.parse(localStorage.getItem('differi_imoveis') || 'null');
+// Sempre mescla pré-cadastrados com manuais
+const manuais = JSON.parse(localStorage.getItem('differi_imoveis') || '[]').filter(i => i.source === 'manual');
+imoveis = [...IMOVEIS_PRELOADED, ...manuais];
+localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
 let driveItens= JSON.parse(localStorage.getItem('differi_drive')   || '[]');
 let tabAtiva  = '';
 let editId    = null;
@@ -409,7 +635,7 @@ function cardHTML(i){
 
   return `<div class="card" onclick="abrirDetalhe('${i.id}')">
     <div class="thumb">
-      ${i.foto?`<img src="${i.foto}" alt="${i.nome}" onerror="this.style.display='none'">`:``}
+      ${i.foto?`<img src="https://wsrv.nl/?url=${encodeURIComponent(i.foto)}&w=400&h=220&fit=cover&output=jpg" alt="${i.nome}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1" onerror="this.style.display='none'">`:``}
       <svg class="thumb-icon" width="44" height="44" viewBox="0 0 44 44" fill="none"><path d="M7 36V15L22 7l15 8v21" stroke="white" stroke-width="2.5" stroke-linejoin="round"/><path d="M15 36V27h14v9" stroke="white" stroke-width="2.5" stroke-linejoin="round"/></svg>
       <span class="cat-tag cat-${i.categoria||'drive'}">${labelCat(i.categoria)}</span>
       ${i.source==='drive'?`<span class="drive-tag">📁 Drive</span>`:''}
@@ -445,7 +671,7 @@ function abrirDetalhe(id){
   ].filter(Boolean).join('');
 
   document.getElementById('det-body').innerHTML = `
-    ${i.foto?`<img src="${i.foto}" style="width:100%;height:210px;object-fit:cover;border-radius:10px;margin-bottom:14px" onerror="this.style.display='none'">`:``}
+    ${i.foto?`<img src="https://wsrv.nl/?url=${encodeURIComponent(i.foto)}&w=600&h=280&fit=cover&output=jpg" style="width:100%;height:210px;object-fit:cover;border-radius:10px;margin-bottom:14px" onerror="this.style.display='none'">`:``}
     <div class="det-grid">
       <div class="det-item"><label>Bairro</label><span>${i.bairro||'—'}</span></div>
       <div class="det-item"><label>Cidade</label><span>${i.cidade||'João Pessoa'}</span></div>
