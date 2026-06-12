@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Differi Imóveis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#1a4f7a;
+  --azul-claro:#2d7ab5;
+  --dourado:#c49a3c;
+  --bg:#f7f6f3;
+  --branco:#ffffff;
+  --cinza1:#f0eeea;
+  --cinza2:#e2dfd9;
+  --cinza3:#9b9589;
+  --texto:#1c1a17;
+  --texto2:#5c5850;
+  --radius:10px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-height:100vh}
+
+/* HEADER */
+.header{background:var(--azul);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.header-logo{display:flex;align-items:center;gap:10px}
+.header-logo span{color:#fff;font-size:18px;font-weight:600;letter-spacing:-.3px}
+.header-logo small{color:rgba(255,255,255,.6);font-size:11px;font-weight:300}
+.header-actions{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--radius);border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-decoration:none}
+.btn-primary{background:var(--dourado);color:#fff}
+.btn-primary:hover{background:#b8882e}
+.btn-outline{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.btn-outline:hover{background:rgba(255,255,255,.2)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-green{background:#25D366;color:#fff}
+.btn-green:hover{background:#1fb956}
+.btn-drive{background:#4285F4;color:#fff}
+.btn-drive:hover{background:#3367d6}
+
+/* FILTROS */
+.filtros-bar{background:var(--branco);border-bottom:1px solid var(--cinza2);padding:12px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;position:sticky;top:60px;z-index:99}
+.filtro-tab{padding:7px 16px;border-radius:20px;border:1px solid var(--cinza2);background:var(--branco);color:var(--texto2);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.filtro-tab:hover{border-color:var(--azul-claro);color:var(--azul)}
+.filtro-tab.active{background:var(--azul);color:#fff;border-color:var(--azul)}
+.filtro-select{padding:7px 12px;border-radius:20px;border:1px solid var(--cinza2);background:var(--branco);color:var(--texto);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;outline:none}
+.filtro-select:focus{border-color:var(--azul-claro)}
+.busca-input{padding:7px 14px;border-radius:20px;border:1px solid var(--cinza2);background:var(--branco);color:var(--texto);font-size:13px;font-family:'Inter',sans-serif;outline:none;min-width:200px}
+.busca-input:focus{border-color:var(--azul-claro)}
+.count-badge{margin-left:auto;font-size:12px;color:var(--cinza3);white-space:nowrap}
+
+/* MAIN */
+.main{padding:24px;max-width:1400px;margin:0 auto}
+.section-title{font-size:13px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--cinza2);display:flex;align-items:center;justify-content:space-between}
+.section-title span{background:var(--cinza2);color:var(--texto2);border-radius:10px;padding:2px 8px;font-size:11px;font-weight:600}
+.section-block{margin-bottom:36px}
+
+/* GRID */
+.imovel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+
+/* CARD */
+.card{background:var(--branco);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;cursor:pointer}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.card-thumb{height:180px;background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);position:relative;overflow:hidden}
+.card-thumb img{width:100%;height:100%;object-fit:cover}
+.card-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.card-thumb-placeholder svg{opacity:.3}
+.card-thumb-placeholder span{color:rgba(255,255,255,.4);font-size:11px}
+.card-categoria{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.cat-lancamento{background:#FF6B35;color:#fff}
+.cat-planta{background:#2d7ab5;color:#fff}
+.cat-pronto{background:#2d8a4e;color:#fff}
+.card-body{padding:14px 16px}
+.card-nome{font-size:15px;font-weight:600;color:var(--texto);margin-bottom:4px;line-height:1.3}
+.card-bairro{font-size:12px;color:var(--cinza3);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.card-meta{display:flex;gap:12px;font-size:12px;color:var(--texto2);margin-bottom:12px;flex-wrap:wrap}
+.card-meta span{display:flex;align-items:center;gap:3px}
+.card-preco{font-size:17px;font-weight:600;color:var(--azul);margin-bottom:12px}
+.card-preco small{font-size:11px;font-weight:400;color:var(--cinza3)}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap}
+.card-actions .btn{flex:1;justify-content:center;font-size:12px;padding:7px 10px}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--branco);border-radius:14px;width:600px;max-width:100%;margin:auto;overflow:hidden}
+.modal-header{background:var(--azul);padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.modal-header h2{color:#fff;font-size:17px;font-weight:600}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+.modal-body{padding:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:12px;font-weight:600;color:var(--texto2);text-transform:uppercase;letter-spacing:.4px}
+.form-group input,.form-group select,.form-group textarea{padding:10px 12px;border-radius:8px;border:1.5px solid var(--cinza2);font-family:'Inter',sans-serif;font-size:14px;color:var(--texto);background:var(--branco);transition:border-color .15s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--azul-claro)}
+.form-group textarea{min-height:80px;resize:vertical}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--cinza2);display:flex;justify-content:flex-end;gap:10px}
+.btn-cancel{background:var(--cinza1);color:var(--texto2)}
+.btn-cancel:hover{background:var(--cinza2)}
+
+/* DETAIL MODAL */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.detail-item label{font-size:11px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:3px}
+.detail-item span{font-size:14px;font-weight:500;color:var(--texto)}
+.detail-desc{font-size:14px;color:var(--texto2);line-height:1.7;padding:12px;background:var(--cinza1);border-radius:8px;margin-bottom:16px}
+.files-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--cinza2)}
+.files-section h4{font-size:12px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.files-links{display:flex;flex-wrap:wrap;gap:8px}
+.file-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;background:var(--cinza1);color:var(--texto2);font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--cinza2);transition:all .15s}
+.file-btn:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 24px;color:var(--cinza3)}
+.empty svg{margin-bottom:12px;opacity:.4}
+.empty p{font-size:14px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--azul);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+
+/* ADMIN BAR */
+.admin-bar{background:var(--cinza1);border-bottom:1px solid var(--cinza2);padding:8px 24px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--cinza3)}
+.admin-bar a{color:var(--azul-claro);text-decoration:none;font-weight:500}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .filtros-bar{padding:10px 12px}
+  .main{padding:16px 12px}
+  .imovel-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .card-thumb{height:130px}
+  .card-body{padding:10px 12px}
+  .card-nome{font-size:13px}
+  .card-preco{font-size:14px}
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:1}
+  .header{padding:0 12px}
+  .header-logo small{display:none}
+  .busca-input{min-width:140px}
+}
+@media(max-width:400px){
+  .imovel-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="admin-bar">
+  🔧 Modo equipe Differi &nbsp;·&nbsp; 
+  <a href="#" onclick="openCadastro();return false">+ Cadastrar imóvel</a> &nbsp;·&nbsp;
+  <a href="#" onclick="toggleAdmin();return false" id="admin-toggle-link">⚙️ Gerenciar</a>
+</div>
+
+<header class="header">
+  <div class="header-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="rgba(255,255,255,.15)"/><path d="M7 20V10l7-4 7 4v10" stroke="white" stroke-width="1.8" stroke-linejoin="round"/><path d="M11 20v-5h6v5" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    <div>
+      <span>Differi Imóveis</span>
+      <small> · Catálogo Interno</small>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline btn-sm" onclick="openCadastro()">+ Novo imóvel</button>
+  </div>
+</header>
+
+<div class="filtros-bar" id="filtros-bar">
+  <button class="filtro-tab active" onclick="setCategoria('',this)">Todos</button>
+  <button class="filtro-tab" onclick="setCategoria('lancamento',this)">🔥 Lançamentos</button>
+  <button class="filtro-tab" onclick="setCategoria('planta',this)">🏗️ Na planta</button>
+  <button class="filtro-tab" onclick="setCategoria('pronto',this)">🏠 Prontos</button>
+  <select class="filtro-select" id="f-bairro" onchange="render()"><option value="">Todos os bairros</option></select>
+  <select class="filtro-select" id="f-cidade" onchange="render()">
+    <option value="">Todas as cidades</option>
+    <option value="João Pessoa">João Pessoa</option>
+    <option value="Cabedelo">Cabedelo</option>
+    <option value="Bayeux">Bayeux</option>
+    <option value="Conde">Conde</option>
+  </select>
+  <input class="busca-input" id="f-busca" placeholder="🔍 Buscar imóvel..." oninput="render()">
+  <span class="count-badge" id="count-badge"></span>
+</div>
+
+<main class="main" id="main-content"></main>
+
+<!-- MODAL CADASTRO -->
+<div class="overlay" id="overlay-cadastro">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="cadastro-title">Cadastrar Imóvel</h2>
+      <button class="modal-close" onclick="closeCadastro()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><label>Nome do empreendimento *</label><input type="text" id="c-nome" placeholder="Ex: Edifício Atlântico Manaíra"></div>
+        <div class="form-group"><label>Cidade *</label>
+          <select id="c-cidade">
+            <option value="João Pessoa">João Pessoa</option>
+            <option value="Cabedelo">Cabedelo</option>
+            <option value="Bayeux">Bayeux</option>
+            <option value="Conde">Conde</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Bairro *</label><input type="text" id="c-bairro" placeholder="Ex: Manaíra"></div>
+        <div class="form-group"><label>Categoria *</label>
+          <select id="c-categoria">
+            <option value="lancamento">🔥 Lançamento</option>
+            <option value="planta">🏗️ Na planta</option>
+            <option value="pronto">🏠 Pronto para morar</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Construtora</label><input type="text" id="c-construtora" placeholder="Ex: Moura Dubeux"></div>
+        <div class="form-group"><label>Preço a partir de (R$)</label><input type="number" id="c-preco" placeholder="Ex: 450000"></div>
+        <div class="form-group"><label>Metragem (m²)</label><input type="text" id="c-m2" placeholder="Ex: 65 a 110"></div>
+        <div class="form-group"><label>Quartos</label><input type="text" id="c-quartos" placeholder="Ex: 2 ou 3"></div>
+        <div class="form-group"><label>Vagas</label><input type="text" id="c-vagas" placeholder="Ex: 1 ou 2"></div>
+        <div class="form-group"><label>Entrega prevista</label><input type="text" id="c-entrega" placeholder="Ex: Dez/2026"></div>
+        <div class="form-group full"><label>Descrição / Diferenciais</label><textarea id="c-desc" placeholder="Descreva o imóvel, localização, diferenciais..."></textarea></div>
+        <div class="form-group full"><label>Foto principal (URL ou link do Drive)</label><input type="text" id="c-foto" placeholder="https://..."></div>
+        <div class="form-group"><label>Link Book/Apresentação</label><input type="text" id="c-book" placeholder="https://drive.google.com/..."></div>
+        <div class="form-group"><label>Tabela de preços</label><input type="text" id="c-tabela" placeholder="https://drive.google.com/..."></div>
+        <div class="form-group"><label>Plantas</label><input type="text" id="c-plantas" placeholder="https://drive.google.com/..."></div>
+        <div class="form-group"><label>Fotos (pasta Drive)</label><input type="text" id="c-fotos" placeholder="https://drive.google.com/..."></div>
+        <div class="form-group full"><label>WhatsApp para contato</label><input type="text" id="c-whatsapp" placeholder="5583999999999"></div>
+      </div>
+      <div id="cadastro-err" style="color:#c0392b;font-size:13px;margin-top:10px;display:none;padding:8px;background:#fce8e8;border-radius:8px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" onclick="closeCadastro()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarImovel()" id="btn-salvar">Salvar imóvel</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="overlay" id="overlay-detalhe">
+  <div class="modal" style="width:680px">
+    <div class="modal-header">
+      <h2 id="detalhe-nome">Detalhes</h2>
+      <button class="modal-close" onclick="closeDetalhe()">×</button>
+    </div>
+    <div class="modal-body" id="detalhe-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================
+// SUPABASE CONFIG
+// Troque pelas suas credenciais do Supabase
+// =====================
+const SUPABASE_URL = 'COLE_SUA_URL_AQUI';
+const SUPABASE_KEY = 'COLE_SUA_KEY_AQUI';
+
+// =====================
+// DADOS LOCAIS (fallback e demo)
+// =====================
+let imoveis = JSON.parse(localStorage.getItem('differi_imoveis') || '[]');
+let categoriaAtiva = '';
+let editandoId = null;
+let usandoSupabase = SUPABASE_URL !== 'COLE_SUA_URL_AQUI';
+
+// =====================
+// SUPABASE FUNCTIONS
+// =====================
+async function sbFetch(path, options = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...options.headers
+    },
+    ...options
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function carregarImoveis() {
+  if (!usandoSupabase) { render(); return; }
+  try {
+    const data = await sbFetch('imoveis?order=created_at.desc&select=*');
+    imoveis = data;
+    localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+    render();
+  } catch(e) {
+    console.error('Supabase erro:', e);
+    imoveis = JSON.parse(localStorage.getItem('differi_imoveis') || '[]');
+    render();
+  }
+}
+
+async function inserirImovel(obj) {
+  if (!usandoSupabase) {
+    obj.id = Date.now().toString();
+    obj.created_at = new Date().toISOString();
+    imoveis.unshift(obj);
+    localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+    return obj;
+  }
+  const [data] = await sbFetch('imoveis', {
+    method: 'POST',
+    body: JSON.stringify(obj)
+  });
+  imoveis.unshift(data);
+  localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+  return data;
+}
+
+async function atualizarImovel(id, obj) {
+  if (!usandoSupabase) {
+    const idx = imoveis.findIndex(i => i.id == id);
+    if (idx >= 0) imoveis[idx] = { ...imoveis[idx], ...obj };
+    localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+    return;
+  }
+  await sbFetch('imoveis?id=eq.' + id, {
+    method: 'PATCH',
+    body: JSON.stringify(obj)
+  });
+  const idx = imoveis.findIndex(i => i.id == id);
+  if (idx >= 0) imoveis[idx] = { ...imoveis[idx], ...obj };
+  localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+}
+
+async function deletarImovel(id) {
+  if (!usandoSupabase) {
+    imoveis = imoveis.filter(i => i.id != id);
+    localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+    return;
+  }
+  await sbFetch('imoveis?id=eq.' + id, { method: 'DELETE' });
+  imoveis = imoveis.filter(i => i.id != id);
+  localStorage.setItem('differi_imoveis', JSON.stringify(imoveis));
+}
+
+// =====================
+// RENDER
+// =====================
+function getFiltered() {
+  const busca = document.getElementById('f-busca').value.toLowerCase();
+  const bairro = document.getElementById('f-bairro').value;
+  const cidade = document.getElementById('f-cidade').value;
+  return imoveis.filter(i => {
+    if (categoriaAtiva && i.categoria !== categoriaAtiva) return false;
+    if (bairro && i.bairro !== bairro) return false;
+    if (cidade && i.cidade !== cidade) return false;
+    if (busca && !i.nome.toLowerCase().includes(busca) && !i.bairro.toLowerCase().includes(busca) && !(i.construtora||'').toLowerCase().includes(busca)) return false;
+    return true;
+  });
+}
+
+function render() {
+  const filtered = getFiltered();
+  // Atualiza filtro de bairros
+  const bairros = [...new Set(imoveis.map(i => i.bairro).filter(Boolean))].sort();
+  const selBairro = document.getElementById('f-bairro');
+  const curBairro = selBairro.value;
+  selBairro.innerHTML = '<option value="">Todos os bairros</option>' + bairros.map(b => `<option value="${b}"${b===curBairro?' selected':''}>${b}</option>`).join('');
+
+  document.getElementById('count-badge').textContent = filtered.length + ' imóvel' + (filtered.length !== 1 ? 'is' : '');
+
+  const main = document.getElementById('main-content');
+
+  if (!filtered.length) {
+    main.innerHTML = `<div class="empty"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M10 38V18L24 8l14 10v20" stroke="#9b9589" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 38V28h12v10" stroke="#9b9589" stroke-width="2.5" stroke-linejoin="round"/></svg><p>Nenhum imóvel encontrado.<br>Clique em <strong>+ Novo imóvel</strong> para cadastrar.</p></div>`;
+    return;
+  }
+
+  if (categoriaAtiva) {
+    main.innerHTML = `<div class="section-block"><div class="imovel-grid">${filtered.map(cardHTML).join('')}</div></div>`;
+  } else {
+    const cats = [
+      { key: 'lancamento', label: '🔥 Lançamentos', cor: '#FF6B35' },
+      { key: 'planta', label: '🏗️ Na planta', cor: '#2d7ab5' },
+      { key: 'pronto', label: '🏠 Prontos para morar', cor: '#2d8a4e' }
+    ];
+    let html = '';
+    cats.forEach(cat => {
+      const lista = filtered.filter(i => i.categoria === cat.key);
+      if (!lista.length) return;
+      // Agrupar por bairro
+      const porBairro = {};
+      lista.forEach(i => {
+        const b = i.bairro || 'Outros';
+        if (!porBairro[b]) porBairro[b] = [];
+        porBairro[b].push(i);
+      });
+      html += `<div class="section-block">
+        <div class="section-title" style="color:${cat.cor}">${cat.label} <span>${lista.length}</span></div>`;
+      Object.entries(porBairro).sort().forEach(([bairro, items]) => {
+        html += `<div style="margin-bottom:20px">
+          <div style="font-size:12px;font-weight:600;color:var(--cinza3);margin-bottom:12px;padding:4px 0;border-bottom:1px dashed var(--cinza2)">${bairro} <span style="background:var(--cinza2);border-radius:8px;padding:1px 7px;font-size:11px">${items.length}</span></div>
+          <div class="imovel-grid">${items.map(cardHTML).join('')}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    if (!html) html = `<div class="empty"><p>Nenhum imóvel cadastrado ainda.</p></div>`;
+    main.innerHTML = html;
+  }
+}
+
+function labelCat(c) {
+  return c==='lancamento'?'Lançamento':c==='planta'?'Na planta':'Pronto';
+}
+
+function cardHTML(i) {
+  const preco = i.preco ? 'R$ ' + parseInt(i.preco).toLocaleString('pt-BR') : '';
+  const meta = [
+    i.m2 ? `<span>📐 ${i.m2}m²</span>` : '',
+    i.quartos ? `<span>🛏 ${i.quartos}q</span>` : '',
+    i.vagas ? `<span>🚗 ${i.vagas}v</span>` : '',
+    i.entrega ? `<span>📅 ${i.entrega}</span>` : ''
+  ].filter(Boolean).join('');
+
+  const thumb = i.foto
+    ? `<img src="${i.foto}" alt="${i.nome}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const placeholder = `<div class="card-thumb-placeholder" style="${i.foto?'display:none':''}"><svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M6 32V14L20 6l14 8v18" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M14 32V24h12v8" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg><span>${i.construtora||''}</span></div>`;
+
+  return `<div class="card" onclick="openDetalhe('${i.id}')">
+    <div class="card-thumb">
+      ${thumb}${placeholder}
+      <span class="card-categoria cat-${i.categoria}">${labelCat(i.categoria)}</span>
+    </div>
+    <div class="card-body">
+      <div class="card-nome">${i.nome}</div>
+      <div class="card-bairro">📍 ${i.bairro}${i.cidade && i.cidade!=='João Pessoa'?' · '+i.cidade:''}</div>
+      ${meta ? `<div class="card-meta">${meta}</div>` : ''}
+      ${preco ? `<div class="card-preco">${preco} <small>a partir de</small></div>` : '<div style="height:8px"></div>'}
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-primary btn-sm" onclick="openDetalhe('${i.id}')">Ver detalhes</button>
+        ${i.whatsapp ? `<a class="btn btn-green btn-sm" href="https://wa.me/${i.whatsapp}?text=Olá! Tenho interesse no ${encodeURIComponent(i.nome)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// =====================
+// DETALHE
+// =====================
+function openDetalhe(id) {
+  const i = imoveis.find(x => x.id == id);
+  if (!i) return;
+  document.getElementById('detalhe-nome').textContent = i.nome;
+  const preco = i.preco ? 'R$ ' + parseInt(i.preco).toLocaleString('pt-BR') : '—';
+  const files = [
+    i.book ? `<a href="${i.book}" target="_blank" class="file-btn">📋 Book</a>` : '',
+    i.tabela ? `<a href="${i.tabela}" target="_blank" class="file-btn">💰 Tabela de preços</a>` : '',
+    i.plantas ? `<a href="${i.plantas}" target="_blank" class="file-btn">📐 Plantas</a>` : '',
+    i.fotos ? `<a href="${i.fotos}" target="_blank" class="file-btn">📸 Fotos</a>` : '',
+  ].filter(Boolean).join('');
+  document.getElementById('detalhe-body').innerHTML = `
+    ${i.foto ? `<img src="${i.foto}" style="width:100%;height:220px;object-fit:cover;border-radius:10px;margin-bottom:16px" onerror="this.style.display='none'">` : ''}
+    <div class="detail-grid">
+      <div class="detail-item"><label>Bairro</label><span>${i.bairro}</span></div>
+      <div class="detail-item"><label>Cidade</label><span>${i.cidade||'João Pessoa'}</span></div>
+      <div class="detail-item"><label>Categoria</label><span class="card-categoria cat-${i.categoria}" style="position:static;font-size:12px">${labelCat(i.categoria)}</span></div>
+      <div class="detail-item"><label>Preço</label><span style="color:var(--azul);font-size:16px;font-weight:600">${preco}</span></div>
+      ${i.construtora?`<div class="detail-item"><label>Construtora</label><span>${i.construtora}</span></div>`:''}
+      ${i.m2?`<div class="detail-item"><label>Metragem</label><span>${i.m2} m²</span></div>`:''}
+      ${i.quartos?`<div class="detail-item"><label>Quartos</label><span>${i.quartos}</span></div>`:''}
+      ${i.vagas?`<div class="detail-item"><label>Vagas</label><span>${i.vagas}</span></div>`:''}
+      ${i.entrega?`<div class="detail-item"><label>Entrega</label><span>${i.entrega}</span></div>`:''}
+    </div>
+    ${i.desc?`<div class="detail-desc">${i.desc}</div>`:''}
+    ${files?`<div class="files-section"><h4>📁 Arquivos e links</h4><div class="files-links">${files}</div></div>`:''}
+    <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
+      ${i.whatsapp?`<a class="btn btn-green" href="https://wa.me/${i.whatsapp}?text=Olá! Tenho interesse no ${encodeURIComponent(i.nome)}" target="_blank" rel="noopener">💬 WhatsApp</a>`:''}
+      <button class="btn btn-outline" style="background:var(--azul);color:#fff" onclick="closeDetalhe();editarImovel('${i.id}')">✏️ Editar</button>
+      <button class="btn" style="background:#fce8e8;color:#c0392b" onclick="confirmarDelete('${i.id}')">🗑️ Remover</button>
+    </div>
+  `;
+  document.getElementById('overlay-detalhe').classList.add('open');
+}
+function closeDetalhe() { document.getElementById('overlay-detalhe').classList.remove('open'); }
+
+// =====================
+// CADASTRO
+// =====================
+function openCadastro() {
+  editandoId = null;
+  document.getElementById('cadastro-title').textContent = 'Cadastrar Imóvel';
+  ['c-nome','c-bairro','c-construtora','c-preco','c-m2','c-quartos','c-vagas','c-entrega','c-desc','c-foto','c-book','c-tabela','c-plantas','c-fotos','c-whatsapp'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('c-cidade').value = 'João Pessoa';
+  document.getElementById('c-categoria').value = 'lancamento';
+  document.getElementById('cadastro-err').style.display = 'none';
+  document.getElementById('overlay-cadastro').classList.add('open');
+}
+
+function editarImovel(id) {
+  const i = imoveis.find(x => x.id == id);
+  if (!i) return;
+  editandoId = id;
+  document.getElementById('cadastro-title').textContent = 'Editar Imóvel';
+  document.getElementById('c-nome').value = i.nome || '';
+  document.getElementById('c-cidade').value = i.cidade || 'João Pessoa';
+  document.getElementById('c-bairro').value = i.bairro || '';
+  document.getElementById('c-categoria').value = i.categoria || 'lancamento';
+  document.getElementById('c-construtora').value = i.construtora || '';
+  document.getElementById('c-preco').value = i.preco || '';
+  document.getElementById('c-m2').value = i.m2 || '';
+  document.getElementById('c-quartos').value = i.quartos || '';
+  document.getElementById('c-vagas').value = i.vagas || '';
+  document.getElementById('c-entrega').value = i.entrega || '';
+  document.getElementById('c-desc').value = i.desc || '';
+  document.getElementById('c-foto').value = i.foto || '';
+  document.getElementById('c-book').value = i.book || '';
+  document.getElementById('c-tabela').value = i.tabela || '';
+  document.getElementById('c-plantas').value = i.plantas || '';
+  document.getElementById('c-fotos').value = i.fotos || '';
+  document.getElementById('c-whatsapp').value = i.whatsapp || '';
+  document.getElementById('cadastro-err').style.display = 'none';
+  document.getElementById('overlay-cadastro').classList.add('open');
+}
+
+function closeCadastro() { document.getElementById('overlay-cadastro').classList.remove('open'); editandoId = null; }
+
+async function salvarImovel() {
+  const nome = document.getElementById('c-nome').value.trim();
+  const bairro = document.getElementById('c-bairro').value.trim();
+  const err = document.getElementById('cadastro-err');
+  if (!nome || !bairro) { err.textContent = 'Nome e bairro são obrigatórios.'; err.style.display = 'block'; return; }
+
+  const btn = document.getElementById('btn-salvar');
+  btn.textContent = 'Salvando...'; btn.disabled = true;
+
+  const obj = {
+    nome, bairro,
+    cidade: document.getElementById('c-cidade').value,
+    categoria: document.getElementById('c-categoria').value,
+    construtora: document.getElementById('c-construtora').value.trim(),
+    preco: document.getElementById('c-preco').value || null,
+    m2: document.getElementById('c-m2').value.trim(),
+    quartos: document.getElementById('c-quartos').value.trim(),
+    vagas: document.getElementById('c-vagas').value.trim(),
+    entrega: document.getElementById('c-entrega').value.trim(),
+    desc: document.getElementById('c-desc').value.trim(),
+    foto: document.getElementById('c-foto').value.trim(),
+    book: document.getElementById('c-book').value.trim(),
+    tabela: document.getElementById('c-tabela').value.trim(),
+    plantas: document.getElementById('c-plantas').value.trim(),
+    fotos: document.getElementById('c-fotos').value.trim(),
+    whatsapp: document.getElementById('c-whatsapp').value.trim(),
+  };
+
+  try {
+    if (editandoId) {
+      await atualizarImovel(editandoId, obj);
+      toast('Imóvel atualizado!');
+    } else {
+      await inserirImovel(obj);
+      toast('Imóvel cadastrado!');
+    }
+    closeCadastro();
+    render();
+  } catch(e) {
+    err.textContent = 'Erro ao salvar: ' + e.message;
+    err.style.display = 'block';
+  }
+  btn.textContent = 'Salvar imóvel'; btn.disabled = false;
+}
+
+async function confirmarDelete(id) {
+  if (!confirm('Remover este imóvel?')) return;
+  await deletarImovel(id);
+  closeDetalhe();
+  render();
+  toast('Imóvel removido.');
+}
+
+// =====================
+// UTILS
+// =====================
+function setCategoria(cat, el) {
+  categoriaAtiva = cat;
+  document.querySelectorAll('.filtro-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function toggleAdmin() { /* futuro */ }
+
+function toast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', dur);
+}
+
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+}));
+
+// =====================
+// INIT
+// =====================
+carregarImoveis();
+</script>
+</body>
+</html>
