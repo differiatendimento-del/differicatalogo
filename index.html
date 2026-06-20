@@ -4,25 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Differi Imóveis — Catálogo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --azul:#1a4f7a;--azul2:#2d7ab5;--dourado:#c49a3c;
+  --azul:#1a4f7a;--azul2:#2d7ab5;--dourado:#c49a3c;--laranja:#e8743b;
   --bg:#f4f3f0;--branco:#fff;--c1:#f0eeea;--c2:#e2dfd9;--c3:#9b9589;
   --texto:#1c1a17;--texto2:#5c5850;--radius:10px;
   --shadow:0 2px 12px rgba(0,0,0,.07);
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 
-/* HEADER */
 .header{background:var(--azul);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .logo{display:flex;align-items:center;gap:10px;color:#fff}
 .logo strong{font-size:17px;font-weight:600}
 .logo small{font-size:11px;color:rgba(255,255,255,.5)}
 .header-btns{display:flex;gap:6px}
 
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap}
 .btn-gold{background:var(--dourado);color:#fff}.btn-gold:hover{background:#b08830}
 .btn-outline{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}.btn-outline:hover{background:rgba(255,255,255,.22)}
@@ -31,25 +29,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 .btn-light{background:var(--c1);color:var(--texto2);border:1px solid var(--c2)}.btn-light:hover{background:var(--c2)}
 .btn-danger{background:#fce8e8;color:#c0392b;border:1px solid #f5c6c6}.btn-danger:hover{background:#f5c6c6}
 .btn-sm{padding:5px 10px;font-size:12px}
-.btn-icon{padding:6px 10px}
 
-/* FILTROS */
-.filtros{background:var(--branco);border-bottom:1px solid var(--c2);padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:sticky;top:56px;z-index:99}
+/* HERO BUSCA — estilo Cinata */
+.hero{background:linear-gradient(120deg,var(--azul) 0%,var(--azul) 45%,var(--laranja) 100%);padding:36px 20px 44px;text-align:center}
+.hero h1{color:#fff;font-size:24px;font-weight:600;margin-bottom:22px}
+.search-card{background:var(--branco);border-radius:14px;max-width:980px;margin:0 auto;padding:18px 22px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.search-tabs{display:flex;gap:8px;margin-bottom:16px;justify-content:center;flex-wrap:wrap}
+.stab{padding:8px 18px;border-radius:8px;border:1px solid var(--c2);background:var(--branco);color:var(--texto2);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.stab.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+.search-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;text-align:left}
+.search-grid .fg{margin:0}
+.search-grid label{font-size:11px;font-weight:600;color:var(--c3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px}
+.search-grid select,.search-grid input{width:100%;padding:9px 10px;border-radius:8px;border:1.5px solid var(--c2);font-size:13px;font-family:'Inter',sans-serif;background:var(--branco);color:var(--texto);outline:none}
+.search-grid select:focus,.search-grid input:focus{border-color:var(--azul2)}
+.valor-row{display:flex;gap:6px}
+.btn-buscar{margin-top:14px;width:100%;background:var(--azul);color:#fff;padding:13px;border-radius:8px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-buscar:hover{background:#143f63}
+
+.filtros{background:var(--branco);border-bottom:1px solid var(--c2);padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .tab{padding:6px 14px;border-radius:20px;border:1px solid var(--c2);background:var(--branco);color:var(--texto2);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
 .tab:hover{border-color:var(--azul2);color:var(--azul)}
 .tab.on{background:var(--azul);color:#fff;border-color:var(--azul)}
-.sel{padding:6px 12px;border-radius:20px;border:1px solid var(--c2);background:var(--branco);color:var(--texto);font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;outline:none;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239b9589' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-.sel:focus{border-color:var(--azul2)}
-.search-wrap{position:relative;display:flex;align-items:center}
-.search-wrap svg{position:absolute;left:10px;color:var(--c3)}
-.search{padding:6px 14px 6px 32px;border-radius:20px;border:1px solid var(--c2);background:var(--branco);color:var(--texto);font-size:13px;font-family:'Inter',sans-serif;outline:none;min-width:180px}
-.search:focus{border-color:var(--azul2)}
-.badge-count{font-size:12px;color:var(--c3);white-space:nowrap}
-.view-btns{display:flex;gap:3px;margin-left:auto}
-.view-btn{padding:6px 9px;border-radius:7px;border:1px solid var(--c2);background:var(--branco);color:var(--c3);cursor:pointer;font-size:15px;line-height:1;transition:all .15s}
+.badge-count{font-size:12px;color:var(--c3);white-space:nowrap;margin-left:auto}
+.view-btns{display:flex;gap:3px}
+.view-btn{padding:6px 9px;border-radius:7px;border:1px solid var(--c2);background:var(--branco);color:var(--c3);cursor:pointer;font-size:15px;line-height:1}
 .view-btn.on{background:var(--azul);color:#fff;border-color:var(--azul)}
 
-/* MAIN */
 .main{padding:20px;max-width:1400px;margin:0 auto}
 .sec-label{font-size:11px;font-weight:600;color:var(--c3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--c2);display:flex;align-items:center;gap:8px}
 .sec-label em{background:var(--c2);color:var(--texto2);border-radius:10px;padding:1px 7px;font-style:normal;font-size:11px}
@@ -57,23 +62,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 .bairro-label{font-size:12px;font-weight:600;color:var(--c3);margin-bottom:10px;margin-top:14px;display:flex;align-items:center;gap:5px}
 .bairro-label em{background:var(--c2);border-radius:8px;padding:1px 6px;font-style:normal;font-size:11px}
 
-/* GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-
-/* CARD */
 .card{background:var(--branco);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s;cursor:pointer;border:1px solid var(--c2)}
 .card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
 .thumb{height:165px;background:linear-gradient(135deg,#1a4f7a,#2d7ab5);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .thumb-icon{opacity:.2;z-index:0}
 .cat-tag{position:absolute;top:8px;left:8px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;z-index:1}
-.src-tag{position:absolute;top:8px;right:8px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:500;z-index:1;background:rgba(0,0,0,.4);color:#fff}
 .cat-lancamento{background:#FF6B35;color:#fff}
 .cat-planta{background:#2d7ab5;color:#fff}
 .cat-pronto{background:#2d8a4e;color:#fff}
 .cbody{padding:12px 14px}
 .cnome{font-size:14px;font-weight:600;margin-bottom:3px;line-height:1.3}
-.cbairro{font-size:12px;color:var(--c3);margin-bottom:8px;display:flex;align-items:center;gap:3px}
+.cbairro{font-size:12px;color:var(--c3);margin-bottom:8px}
 .cmeta{display:flex;gap:8px;font-size:11px;color:var(--texto2);margin-bottom:8px;flex-wrap:wrap}
 .cmeta span{background:var(--c1);padding:2px 7px;border-radius:5px}
 .cpreco{font-size:15px;font-weight:600;color:var(--azul);margin-bottom:10px}
@@ -81,7 +82,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 .cactions{display:flex;gap:5px;flex-wrap:wrap}
 .cactions .btn{flex:1;justify-content:center;font-size:12px;padding:6px 8px;min-width:0}
 
-/* LIST VIEW */
 .list .grid{display:flex;flex-direction:column;gap:8px}
 .list .card{display:flex;flex-direction:row;height:90px}
 .list .thumb{width:120px;min-width:120px;height:90px;border-radius:var(--radius) 0 0 var(--radius);flex-shrink:0}
@@ -94,7 +94,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 .list .cactions{margin-left:auto;flex-shrink:0;flex-wrap:nowrap}
 .list .bairro-label{display:none}
 
-/* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
 .overlay.open{display:flex}
 .modal{background:var(--branco);border-radius:14px;width:620px;max-width:100%;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
@@ -112,11 +111,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 .full{grid-column:1/-1}
 .mfoot{padding:14px 22px;border-top:1px solid var(--c2);display:flex;justify-content:flex-end;gap:8px;border-radius:0 0 14px 14px}
 .err{color:#c0392b;font-size:12px;padding:8px 10px;background:#fce8e8;border-radius:7px;margin-top:8px;display:none}
-.section-links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .flink{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;background:var(--c1);color:var(--texto2);font-size:12px;font-weight:500;text-decoration:none;border:1px solid var(--c2);transition:all .15s}
 .flink:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+.section-links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 
-/* DETAIL */
 .det-hero{width:100%;height:220px;object-fit:cover;border-radius:10px;margin-bottom:14px;display:block}
 .det-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .det-item label{font-size:11px;font-weight:600;color:var(--c3);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:2px}
@@ -125,25 +123,21 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 .det-files h4{font-size:11px;font-weight:600;color:var(--c3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
 .det-actions{display:flex;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--c2);flex-wrap:wrap}
 
-/* EMPTY / LOADING */
 .empty,.loading{text-align:center;padding:52px 20px;color:var(--c3)}
 .empty p,.loading p{font-size:14px;margin-top:10px}
 .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--c2);border-top-color:var(--azul2);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--azul);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:fadeup .2s ease}
-@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--azul);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.2)}
 
-/* UPLOAD */
-.upload-area{border:2px dashed var(--c2);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:border-color .15s;background:var(--c1)}
-.upload-area:hover{border-color:var(--azul2)}
-.upload-area p{font-size:13px;color:var(--c3);margin-top:6px}
-.file-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--c1);border:1px solid var(--c2);border-radius:6px;font-size:12px;color:var(--texto2);margin:3px}
-.file-chip button{background:none;border:none;cursor:pointer;color:var(--c3);font-size:14px;line-height:1;padding:0}
-
-/* RESPONSIVE */
+@media(max-width:900px){
+  .search-grid{grid-template-columns:1fr 1fr}
+}
 @media(max-width:640px){
+  .hero{padding:24px 12px 32px}
+  .hero h1{font-size:18px;margin-bottom:16px}
+  .search-card{padding:14px}
+  .search-grid{grid-template-columns:1fr}
   .filtros{padding:8px 12px}
   .main{padding:12px}
   .grid{grid-template-columns:1fr 1fr;gap:10px}
@@ -172,20 +166,45 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
   </div>
 </header>
 
-<div class="filtros">
-  <button class="tab on" onclick="setTab('',this)">Todos</button>
-  <button class="tab" onclick="setTab('lancamento',this)">🔥 Lançamentos</button>
-  <button class="tab" onclick="setTab('planta',this)">🏗 Na planta</button>
-  <button class="tab" onclick="setTab('pronto',this)">🏠 Prontos</button>
-  <select class="sel" id="f-bairro" onchange="render()"><option value="">Todos os bairros</option></select>
-  <select class="sel" id="f-cidade" onchange="render()">
-    <option value="">Todas as cidades</option>
-    <option>João Pessoa</option><option>Cabedelo</option><option>Bayeux</option><option>Conde</option>
-  </select>
-  <div class="search-wrap">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search" id="f-busca" placeholder="Buscar..." oninput="render()">
+<div class="hero">
+  <h1>Pesquise agora e dê o primeiro passo!</h1>
+  <div class="search-card">
+    <div class="search-tabs">
+      <button class="stab on" onclick="setSearchTab('',this)">Todos</button>
+      <button class="stab" onclick="setSearchTab('lancamento',this)">Lançamentos</button>
+      <button class="stab" onclick="setSearchTab('planta',this)">Na planta</button>
+      <button class="stab" onclick="setSearchTab('pronto',this)">Pronto p/ morar</button>
+    </div>
+    <div class="search-grid">
+      <div class="fg"><label>Tipo</label><select id="f-tipo" onchange="render()">
+        <option value="">Todos</option>
+        <option>Apartamento</option><option>Apartamento Duplex</option><option>Apartamento Garden</option>
+        <option>Apartamento Térreo</option><option>Casa</option><option>Casa em Condomínio</option>
+        <option>Cobertura</option><option>Flat</option><option>Flat Garden</option><option>Loft</option>
+        <option>Lote</option><option>Lote em Condomínio</option><option>Studio</option><option>Studio Duplex</option>
+        <option>Terreno</option>
+      </select></div>
+      <div class="fg"><label>Cidade</label><select id="f-cidade" onchange="popularBairros();render()">
+        <option value="">Todas</option>
+        <option>João Pessoa</option><option>Cabedelo</option><option>Bayeux</option><option>Bananeiras</option><option>Conde</option>
+      </select></div>
+      <div class="fg"><label>Bairro</label><select id="f-bairro" onchange="render()"><option value="">Todos</option></select></div>
+      <div class="fg"><label>Quartos</label><select id="f-quartos" onchange="render()">
+        <option value="">Todos</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option>
+      </select></div>
+      <div class="fg"><label>Valor</label>
+        <div class="valor-row">
+          <input type="number" id="f-preco-min" placeholder="Mín" oninput="render()">
+          <input type="number" id="f-preco-max" placeholder="Máx" oninput="render()">
+        </div>
+      </div>
+    </div>
+    <input class="search-grid-busca" id="f-busca" placeholder="🔍 Buscar por nome do empreendimento ou construtora..." oninput="render()" style="width:100%;margin-top:12px;padding:9px 12px;border-radius:8px;border:1.5px solid var(--c2);font-size:13px;font-family:'Inter',sans-serif;outline:none">
+    <button class="btn-buscar" onclick="buscarImoveis()">🔍 Buscar imóveis</button>
   </div>
+</div>
+
+<div class="filtros">
   <span class="badge-count" id="badge"></span>
   <div class="view-btns">
     <button class="view-btn on" id="btn-grid" onclick="setView('grid')" title="Grade">⊞</button>
@@ -197,7 +216,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
   <div class="loading"><div class="spinner"></div><p>Carregando imóveis...</p></div>
 </main>
 
-<!-- MODAL DETALHE -->
 <div class="overlay" id="ov-det">
   <div class="modal modal-lg">
     <div class="mhead"><h2 id="det-nome">Detalhes</h2><button class="mclose" onclick="fecharDet()">×</button></div>
@@ -205,16 +223,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
   </div>
 </div>
 
-<!-- MODAL CADASTRO/EDIÇÃO -->
 <div class="overlay" id="ov-cad">
   <div class="modal modal-lg">
     <div class="mhead"><h2 id="cad-title">Cadastrar Imóvel</h2><button class="mclose" onclick="fecharCad()">×</button></div>
     <div class="mbody">
       <div class="fgrid">
         <div class="fg full"><label>Nome do empreendimento *</label><input id="c-nome" placeholder="Ex: Alti H-Station"></div>
-        <div class="fg"><label>Cidade *</label><select id="c-cidade"><option>João Pessoa</option><option>Cabedelo</option><option>Bayeux</option><option>Conde</option></select></div>
-        <div class="fg"><label>Bairro *</label><input id="c-bairro" placeholder="Ex: Manaíra"></div>
-        <div class="fg"><label>Categoria *</label><select id="c-cat"><option value="lancamento">🔥 Lançamento</option><option value="planta">🏗 Na planta</option><option value="pronto">🏠 Pronto</option></select></div>
+        <div class="fg"><label>Tipo</label><select id="c-tipo">
+          <option>Apartamento</option><option>Apartamento Duplex</option><option>Apartamento Garden</option>
+          <option>Apartamento Térreo</option><option>Casa</option><option>Casa em Condomínio</option>
+          <option>Cobertura</option><option>Flat</option><option>Flat Garden</option><option>Loft</option>
+          <option>Lote</option><option>Lote em Condomínio</option><option>Studio</option><option>Studio Duplex</option>
+          <option>Terreno</option>
+        </select></div>
+        <div class="fg"><label>Cidade *</label><select id="c-cidade" onchange="popularBairrosCadastro()">
+          <option>João Pessoa</option><option>Cabedelo</option><option>Bayeux</option><option>Bananeiras</option><option>Conde</option>
+        </select></div>
+        <div class="fg"><label>Bairro *</label><input id="c-bairro" placeholder="Ex: Manaíra" list="bairros-lista"><datalist id="bairros-lista"></datalist></div>
+        <div class="fg"><label>Categoria *</label><select id="c-cat"><option value="lancamento">Lançamento</option><option value="planta">Na planta</option><option value="pronto">Pronto</option></select></div>
         <div class="fg"><label>Construtora</label><input id="c-const" placeholder="Ex: H-Station"></div>
         <div class="fg"><label>Preço a partir (R$)</label><input type="number" id="c-preco" placeholder="450000"></div>
         <div class="fg"><label>Metragem (m²)</label><input id="c-m2" placeholder="Ex: 65 a 110"></div>
@@ -245,12 +271,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto)}
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════
-// SUPABASE CONFIG
-// ═══════════════════════════════════
 const SB_URL = 'https://rlmtsmqksedpkjezboko.supabase.co';
 const SB_KEY = 'sb_publishable_C8vI_EAoYaP9Um-Y9o5tig_Wxs1OQDS';
-const WPP_PADRAO = '558332086459'; // WhatsApp padrão Differi
+const WPP_PADRAO = '5583982217424';
+
+const BAIRROS_POR_CIDADE = {
+  'João Pessoa': ['Altiplano','Aeroclube','Manaíra','Tambaú','Cabo Branco','Bessa','Miramar','Jardim Luna','Brisamar','Estados','Torre','Seixas','Portal do Sol','Pedro Gondim','Jardim Cidade Universitária','Mangabeira','Colibris','Água Fria','Bancários','José Américo','Jardim Oceania','Tambauzinho','Tambiá','Treze de Maio','Valentina','Bairro dos Estados','Cristo Redentor','Cruz das Armas','Geisel','Gramame','Mandacaru','Muçumagro','Novo Geisel','Planalto Boa Esperança','Rangel','Colinas do Sul','Alto do Céu'],
+  'Cabedelo': ['Intermares','Camboinha','Formosa','Poço','Ponta de Matos','Ponta de Campina','Areia Dourada','Amazônia Park','Jacaré','Jardim Camboinha','Centro'],
+  'Bayeux': ['Centro','Timbó','Camalaú'],
+  'Bananeiras': ['Centro'],
+  'Conde': ['Jacumã','Tabatinga','Carapibus']
+};
+
+let imoveis=[];
+let tabAtiva='';
+let viewMode='grid';
+let editId=null;
 
 async function sb(path, opts={}){
   const r = await fetch(SB_URL+'/rest/v1/'+path,{
@@ -262,38 +298,64 @@ async function sb(path, opts={}){
   return txt?JSON.parse(txt):[];
 }
 
-// ═══════════════════════════════════
-// STATE
-// ═══════════════════════════════════
-let imoveis=[];
-let tabAtiva='';
-let viewMode='grid';
-let editId=null;
-
-// ═══════════════════════════════════
-// LOAD
-// ═══════════════════════════════════
 async function carregarImoveis(){
   document.getElementById('main').innerHTML='<div class="loading"><div class="spinner"></div><p>Carregando imóveis...</p></div>';
   try{
     imoveis = await sb('imoveis?order=nome.asc&ativo=eq.true&select=*');
+    popularBairros();
     render();
   }catch(e){
     document.getElementById('main').innerHTML=`<div class="empty"><p>❌ Erro ao carregar: ${e.message}</p></div>`;
   }
 }
 
-// ═══════════════════════════════════
-// RENDER
-// ═══════════════════════════════════
+function popularBairros(){
+  const cidade=document.getElementById('f-cidade').value;
+  const sel=document.getElementById('f-bairro');
+  const cur=sel.value;
+  let bairros;
+  if(cidade && BAIRROS_POR_CIDADE[cidade]){
+    bairros=BAIRROS_POR_CIDADE[cidade];
+  } else {
+    bairros=[...new Set(imoveis.map(i=>i.bairro).filter(Boolean))].sort();
+  }
+  sel.innerHTML='<option value="">Todos</option>'+bairros.map(b=>`<option${b===cur?' selected':''}>${b}</option>`).join('');
+}
+function popularBairrosCadastro(){
+  const cidade=document.getElementById('c-cidade').value;
+  const dl=document.getElementById('bairros-lista');
+  const bairros=BAIRROS_POR_CIDADE[cidade]||[];
+  dl.innerHTML=bairros.map(b=>`<option value="${b}">`).join('');
+}
+
+function buscarImoveis(){
+  document.getElementById('main').scrollIntoView({behavior:'smooth'});
+  render();
+  toast('🔍 '+filtrados().length+' imóvel(is) encontrado(s)');
+}
+function setSearchTab(t,el){
+  tabAtiva=t;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  render();
+}
+
 function filtrados(){
   const busca=document.getElementById('f-busca').value.toLowerCase();
   const bairro=document.getElementById('f-bairro').value;
   const cidade=document.getElementById('f-cidade').value;
+  const tipo=document.getElementById('f-tipo').value;
+  const quartos=document.getElementById('f-quartos').value;
+  const pMin=parseFloat(document.getElementById('f-preco-min').value)||0;
+  const pMax=parseFloat(document.getElementById('f-preco-max').value)||Infinity;
   return imoveis.filter(i=>{
     if(tabAtiva && i.categoria!==tabAtiva) return false;
     if(bairro && i.bairro!==bairro) return false;
     if(cidade && (i.cidade||'João Pessoa')!==cidade) return false;
+    if(tipo && i.tipo!==tipo) return false;
+    if(quartos && parseInt(i.quartos)<parseInt(quartos)) return false;
+    if(i.preco && (i.preco<pMin || i.preco>pMax)) return false;
+    if((pMin>0||pMax<Infinity) && !i.preco) return false;
     if(busca && !i.nome.toLowerCase().includes(busca) && !(i.bairro||'').toLowerCase().includes(busca) && !(i.construtora||'').toLowerCase().includes(busca)) return false;
     return true;
   });
@@ -301,18 +363,13 @@ function filtrados(){
 
 function render(){
   const lista=filtrados();
-  // Bairros
-  const sel=document.getElementById('f-bairro');
-  const cur=sel.value;
-  const bairros=[...new Set(imoveis.map(i=>i.bairro).filter(Boolean))].sort();
-  sel.innerHTML='<option value="">Todos os bairros</option>'+bairros.map(b=>`<option${b===cur?' selected':''}>${b}</option>`).join('');
   document.getElementById('badge').textContent=lista.length+' imóvel'+(lista.length!==1?'is':'');
 
   const main=document.getElementById('main');
   main.className=viewMode==='list'?'main list':'main';
 
   if(!lista.length){
-    main.innerHTML=imoveis.length?'<div class="empty"><p>Nenhum imóvel com esses filtros.</p></div>':'<div class="empty"><p>Nenhum imóvel cadastrado ainda.<br>Clique em <strong>+ Novo imóvel</strong> para começar.</p></div>';
+    main.innerHTML=imoveis.length?'<div class="empty"><p>Nenhum imóvel com esses filtros.</p></div>':'<div class="empty"><p>Nenhum imóvel cadastrado ainda.</p></div>';
     return;
   }
 
@@ -329,7 +386,6 @@ function render(){
     cats.forEach(cat=>{
       const sub=lista.filter(i=>i.categoria===cat.key);
       if(!sub.length) return;
-      // agrupar por bairro
       const porBairro={};
       sub.forEach(i=>{const b=i.bairro||'Sem bairro';if(!porBairro[b])porBairro[b]=[];porBairro[b].push(i);});
       let inner='';
@@ -342,16 +398,13 @@ function render(){
   }
 }
 
-function labelCat(c){
-  return c==='lancamento'?'Lançamento':c==='planta'?'Na planta':'Pronto';
-}
+function labelCat(c){return c==='lancamento'?'Lançamento':c==='planta'?'Na planta':'Pronto'}
 
 function fotoURL(i){
   if(!i.foto_url) return '';
-  // suporta Drive thumbnail
   const m=i.foto_url.match(/\/d\/([^\/\?]+)/);
   if(m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
-  if(i.foto_url.includes('wsrv.nl')) return i.foto_url;
+  if(i.foto_url.includes('wsrv.nl')||i.foto_url.includes('thumbnail?id=')) return i.foto_url;
   return `https://wsrv.nl/?url=${encodeURIComponent(i.foto_url)}&w=400&h=220&fit=cover&output=jpg`;
 }
 
@@ -379,16 +432,13 @@ function cardHTML(i){
       ${preco?`<div class="cpreco">${preco} <small>a partir de</small></div>`:'<div style="height:4px"></div>'}
       <div class="cactions" onclick="event.stopPropagation()">
         <button class="btn btn-blue btn-sm" onclick="abrirDet('${i.id}')">Ver</button>
-        <a class="btn btn-green btn-sm" href="https://wa.me/${wpp}?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(i.nome)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp</a>
+        <a class="btn btn-green btn-sm" href="https://wa.me/${wpp}?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(i.nome)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬</a>
         ${i.fotos_url?`<a class="btn btn-light btn-sm" href="${i.fotos_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Ver pasta Drive">📁</a>`:''}
       </div>
     </div>
   </div>`;
 }
 
-// ═══════════════════════════════════
-// DETALHE
-// ═══════════════════════════════════
 function abrirDet(id){
   const i=imoveis.find(x=>x.id===id);
   if(!i) return;
@@ -411,6 +461,7 @@ function abrirDet(id){
       <div class="det-item"><label>Categoria</label><span class="cat-tag cat-${i.categoria}" style="position:static;font-size:12px">${labelCat(i.categoria)}</span></div>
       <div class="det-item"><label>Preço</label><span style="color:var(--azul);font-size:16px;font-weight:600">${preco}</span></div>
       ${i.construtora?`<div class="det-item"><label>Construtora</label><span>${i.construtora}</span></div>`:''}
+      ${i.tipo?`<div class="det-item"><label>Tipo</label><span>${i.tipo}</span></div>`:''}
       ${i.m2?`<div class="det-item"><label>Metragem</label><span>${i.m2} m²</span></div>`:''}
       ${i.quartos?`<div class="det-item"><label>Quartos</label><span>${i.quartos}</span></div>`:''}
       ${i.vagas?`<div class="det-item"><label>Vagas</label><span>${i.vagas}</span></div>`:''}
@@ -427,9 +478,6 @@ function abrirDet(id){
 }
 function fecharDet(){document.getElementById('ov-det').classList.remove('open')}
 
-// ═══════════════════════════════════
-// CADASTRO / EDIÇÃO
-// ═══════════════════════════════════
 function abrirCadastro(id){
   editId=id||null;
   document.getElementById('cad-title').textContent=id?'Editar Imóvel':'Cadastrar Imóvel';
@@ -438,7 +486,9 @@ function abrirCadastro(id){
     const i=imoveis.find(x=>x.id===id);
     if(i){
       document.getElementById('c-nome').value=i.nome||'';
+      document.getElementById('c-tipo').value=i.tipo||'Apartamento';
       document.getElementById('c-cidade').value=i.cidade||'João Pessoa';
+      popularBairrosCadastro();
       document.getElementById('c-bairro').value=i.bairro||'';
       document.getElementById('c-cat').value=i.categoria||'lancamento';
       document.getElementById('c-const').value=i.construtora||'';
@@ -457,8 +507,10 @@ function abrirCadastro(id){
     }
   } else {
     campos.forEach(c=>document.getElementById(c).value='');
+    document.getElementById('c-tipo').value='Apartamento';
     document.getElementById('c-cidade').value='João Pessoa';
     document.getElementById('c-cat').value='lancamento';
+    popularBairrosCadastro();
   }
   document.getElementById('cad-err').style.display='none';
   document.getElementById('ov-cad').classList.add('open');
@@ -474,6 +526,7 @@ async function salvar(){
   btn.textContent='Salvando...';btn.disabled=true;
   const obj={
     nome,bairro,
+    tipo:document.getElementById('c-tipo').value,
     cidade:document.getElementById('c-cidade').value,
     categoria:document.getElementById('c-cat').value,
     construtora:document.getElementById('c-const').value.trim()||null,
@@ -517,15 +570,6 @@ async function deletar(id){
   }catch(e){toast('Erro: '+e.message)}
 }
 
-// ═══════════════════════════════════
-// UTILS
-// ═══════════════════════════════════
-function setTab(t,el){
-  tabAtiva=t;
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  render();
-}
 function setView(mode){
   viewMode=mode;
   document.getElementById('btn-grid').classList.toggle('on',mode==='grid');
@@ -539,7 +583,7 @@ function toast(msg,dur=2500){
 }
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
 
-// INIT
+popularBairros();
 carregarImoveis();
 </script>
 </body>
