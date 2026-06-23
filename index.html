@@ -443,7 +443,6 @@ function abrirDet(id){
   const i=imoveis.find(x=>x.id===id);
   if(!i) return;
   document.getElementById('det-nome').textContent=i.nome;
-  const preco=i.preco?'R$ '+parseInt(i.preco).toLocaleString('pt-BR'):'—';
   const wpp=i.whatsapp||WPP_PADRAO;
   const foto=fotoURL(i);
   const links=[
@@ -459,7 +458,14 @@ function abrirDet(id){
       <div class="det-item"><label>Bairro</label><span>${i.bairro||'—'}</span></div>
       <div class="det-item"><label>Cidade</label><span>${i.cidade||'João Pessoa'}</span></div>
       <div class="det-item"><label>Categoria</label><span class="cat-tag cat-${i.categoria}" style="position:static;font-size:12px">${labelCat(i.categoria)}</span></div>
-      <div class="det-item"><label>Preço</label><span style="color:var(--azul);font-size:16px;font-weight:600">${preco}</span></div>
+      <div class="det-item">
+        <label>Preço <span style="color:var(--c3);font-weight:400;text-transform:none">(clique para editar)</span></label>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="color:var(--c3);font-size:13px">R$</span>
+          <input type="number" id="quick-preco" value="${i.preco||''}" placeholder="Sem valor" style="border:1px solid var(--c2);border-radius:6px;padding:4px 8px;font-size:15px;font-weight:600;color:var(--azul);width:140px;font-family:'Inter',sans-serif" onkeydown="if(event.key==='Enter')salvarPrecoRapido('${i.id}')">
+          <button class="btn btn-blue btn-sm" onclick="salvarPrecoRapido('${i.id}')" title="Salvar preço">💾</button>
+        </div>
+      </div>
       ${i.construtora?`<div class="det-item"><label>Construtora</label><span>${i.construtora}</span></div>`:''}
       ${i.tipo?`<div class="det-item"><label>Tipo</label><span>${i.tipo}</span></div>`:''}
       ${i.m2?`<div class="det-item"><label>Metragem</label><span>${i.m2} m²</span></div>`:''}
@@ -471,12 +477,26 @@ function abrirDet(id){
     ${links?`<div class="det-files" style="margin-bottom:14px"><h4>📁 Arquivos</h4><div class="section-links">${links}</div></div>`:''}
     <div class="det-actions">
       <a class="btn btn-green" href="https://wa.me/${wpp}?text=Olá!%20Tenho%20interesse%20no%20${encodeURIComponent(i.nome)}" target="_blank" rel="noopener">💬 WhatsApp</a>
-      <button class="btn btn-blue" onclick="fecharDet();abrirCadastro('${i.id}')">✏️ Editar</button>
+      <button class="btn btn-blue" onclick="fecharDet();abrirCadastro('${i.id}')">✏️ Editar tudo</button>
       <button class="btn btn-danger" onclick="deletar('${i.id}')">🗑️ Remover</button>
     </div>`;
   document.getElementById('ov-det').classList.add('open');
 }
 function fecharDet(){document.getElementById('ov-det').classList.remove('open')}
+
+async function salvarPrecoRapido(id){
+  const valor=document.getElementById('quick-preco').value;
+  const preco=valor?parseFloat(valor):null;
+  try{
+    await sb(`imoveis?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({preco})});
+    const idx=imoveis.findIndex(x=>x.id===id);
+    if(idx>=0)imoveis[idx].preco=preco;
+    toast('✅ Preço salvo!');
+    render();
+  }catch(e){
+    toast('Erro ao salvar preço: '+e.message);
+  }
+}
 
 function abrirCadastro(id){
   editId=id||null;
