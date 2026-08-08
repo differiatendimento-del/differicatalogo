@@ -55,7 +55,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
 .stab{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s;background:transparent;color:var(--cinza3)}
 .stab:hover{color:var(--azul2)}
 .stab.on{background:var(--azul);color:#fff}
-.search-fields{display:grid;grid-template-columns:repeat(4,1fr) repeat(3,1fr) auto;gap:12px;align-items:end}
+.search-fields{display:grid;grid-template-columns:repeat(6,1fr) auto;gap:12px;align-items:end}
 .sf-label{font-size:11px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
 .sf-input,.sf-select{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--cinza2);font-family:'Inter',sans-serif;font-size:13px;color:var(--texto);background:#fff;outline:none;transition:border-color .15s}
 .sf-input:focus,.sf-select:focus{border-color:var(--azul3)}
@@ -97,6 +97,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
 .cat-pronto{background:#16A34A;color:#fff}
 .cat-lancamento{background:var(--dourado);color:var(--azul)}
 .cat-aluguel{background:#7C3AED;color:#fff}
+
+/* BAIRRO CHIPS */
+.bairro-chips{display:flex;flex-wrap:wrap;gap:6px}
+.bairro-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--cinza2);background:#fff;color:var(--texto2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;white-space:nowrap;user-select:none}}
+.bairro-chip:hover{border-color:var(--azul3);color:var(--azul2);background:rgba(46,109,158,.05)}
+.bairro-chip.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+.bairro-clear-btn{background:none;border:none;color:var(--cinza3);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;padding:2px 6px;border-radius:5px}
+.bairro-clear-btn:hover{color:var(--azul);background:var(--cinza1)}
 .card-fav{position:absolute;top:10px;right:10px;width:30px;height:30px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;border:none;font-size:14px;backdrop-filter:blur(4px)}
 .card-body{padding:14px 16px}
 .card-nome{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--texto);margin-bottom:3px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -227,15 +235,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
     <div class="search-fields">
       <div>
         <span class="sf-label">Cidade</span>
-        <select class="sf-select" id="f-cidade" onchange="popularBairrosFiltro();render()">
+        <select class="sf-select" id="f-cidade" onchange="popularBairrosFiltro();renderChips();render()">
           <option value="">Todas as cidades</option>
           <option value="João Pessoa">João Pessoa</option>
           <option value="Cabedelo">Cabedelo</option>
         </select>
-      </div>
-      <div>
-        <span class="sf-label">Bairros (múltiplos)</span>
-        <select class="sf-select" id="f-bairro" multiple onchange="render()" style="height:42px;min-height:42px" title="Ctrl+clique para selecionar vários"></select>
       </div>
       <div>
         <span class="sf-label">Quartos</span>
@@ -275,6 +279,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
       <button class="btn-buscar" onclick="render();document.getElementById('main-content').scrollIntoView({behavior:'smooth'})">
         🔍 Buscar
       </button>
+    </div>
+    <div style="margin-top:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px">Bairro</span>
+        <button class="bairro-clear-btn" id="bairro-clear-btn" onclick="limparBairros()" style="display:none">✕ Limpar</button>
+      </div>
+      <div class="bairro-chips" id="bairro-chips"></div>
     </div>
   </div>
 </div>
@@ -408,9 +419,9 @@ async function carregarDados(){
   document.getElementById('main-content').innerHTML='<div class="loading"><div class="spinner"></div><p>Carregando catálogo Differi...</p></div>';
   try{
     imoveis = await sb('imoveis?order=nome.asc&ativo=eq.true&select=*');
-    popularBairros();
     atualizarStats();
     render();
+    setTimeout(()=>{ popularBairros(); renderChips(); }, 50);
   }catch(e){
     document.getElementById('main-content').innerHTML=`<div class="empty"><p>❌ Erro: ${e.message}</p></div>`;
   }
@@ -429,36 +440,61 @@ function atualizarStats(){
 
 function normalizarBairro(b){
   if(!b) return b;
-  // Normalize case: capitalize each word
-  return b.toLowerCase().replace(/(?:^|\s|-)\S/g, c=>c.toUpperCase())
-    .replace(/\bDe\b/g,'de').replace(/\bDo\b/g,'do').replace(/\bDa\b/g,'da')
-    .replace(/\bDos\b/g,'dos').replace(/\bDas\b/g,'das')
-    .replace(/\bE\b/g,'e').replace(/\bNo\b/g,'no').replace(/\bNa\b/g,'na');
+  return b.toLowerCase().replace(/(?:^|[\s-])\S/g, c=>c.toUpperCase())
+    .replace(/De/g,'de').replace(/Do/g,'do').replace(/Da/g,'da')
+    .replace(/Dos/g,'dos').replace(/Das/g,'das')
+    .replace(/E/g,'e').replace(/No/g,'no').replace(/Na/g,'na');
 }
 
-const BAIRROS_JOAO_PESSOA = ['Aeroclube','Altiplano','Bancários','Bessa','Brisamar','Cabo Branco','Castelo Branco','Colibris','Estados','Geisel','Jardim Cidade Universitária','Jardim Luna','Jardim Oceania','Manaíra','Mangabeira','Miramar','Muçumagro','Pedro Gondim','Portal do Sol','Seixas','Tambaú','Tambauzinho','Torre','Valentina'];
-const BAIRROS_CABEDELO = ['Areia Dourada','Camboinha','Formosa','Intermares','Jacaré','Jardim Camboinha','Poço','Ponta de Campina','Ponta de Matos'];
+let bairrosSelecionados = [];
+
+function getBairros(){
+  if(!imoveis||!imoveis.length) return [];
+  const cidade = document.getElementById('f-cidade')?.value||'';
+  let lista = imoveis;
+  if(cidade) lista = lista.filter(i=>(i.cidade||'João Pessoa')===cidade);
+  return [...new Set(lista.map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
+}
 
 function popularBairros(){
   popularBairrosFiltro();
   const dl = document.getElementById('bairros-dl');
-  const todos = [...new Set(imoveis.map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
-  if(dl) dl.innerHTML = todos.map(b=>`<option value="${b}">`).join('');
+  if(dl) dl.innerHTML = getBairros().map(b=>`<option value="${b}">`).join('');
 }
 
 function popularBairrosFiltro(){
-  const cidade = document.getElementById('f-cidade')?.value || '';
-  const sel = document.getElementById('f-bairro');
-  
-  let bairros;
-  if(cidade === 'João Pessoa'){
-    bairros = [...new Set(imoveis.filter(i=>(i.cidade||'João Pessoa')==='João Pessoa').map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
-  } else if(cidade === 'Cabedelo'){
-    bairros = [...new Set(imoveis.filter(i=>i.cidade==='Cabedelo').map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
-  } else {
-    bairros = [...new Set(imoveis.map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
-  }
-  sel.innerHTML = bairros.map(b=>`<option value="${b}">${b}</option>`).join('');
+  bairrosSelecionados = bairrosSelecionados.filter(b=>getBairros().includes(b));
+  renderChips();
+}
+
+function renderChips(){
+  const container = document.getElementById('bairro-chips');
+  if(!container) return;
+  const bairros = getBairros();
+  if(!bairros.length){ container.innerHTML='<span style="font-size:12px;color:var(--cinza3)">Carregando bairros...</span>'; return; }
+  container.innerHTML = bairros.map((b,i)=>{
+    const on = bairrosSelecionados.includes(b);
+    return `<button class="bairro-chip${on?' on':''}" onclick="toggleBairro(${i})">${b}</button>`;
+  }).join('');
+  window._bairrosList = bairros;
+  const btn = document.getElementById('bairro-clear-btn');
+  if(btn) btn.style.display = bairrosSelecionados.length>0?'inline-flex':'none';
+}
+
+function toggleBairro(i){
+  const b = (window._bairrosList||[])[i];
+  if(!b) return;
+  const idx = bairrosSelecionados.indexOf(b);
+  if(idx>=0) bairrosSelecionados.splice(idx,1);
+  else bairrosSelecionados.push(b);
+  renderChips();
+  render();
+}
+
+function limparBairros(){
+  bairrosSelecionados=[];
+  renderChips();
+  render();
 }
 
 // ═══════════════════════════
@@ -467,8 +503,6 @@ function popularBairrosFiltro(){
 function filtrar(){
   const busca = document.getElementById('f-busca').value.toLowerCase();
   const cidadeSel = document.getElementById('f-cidade')?.value || '';
-  const bairroSel = document.getElementById('f-bairro');
-  const bairrosSel = Array.from(bairroSel.selectedOptions).map(o=>o.value).filter(Boolean);
   const quartos = document.getElementById('f-quartos').value;
   const vmin = parseFloat(document.getElementById('f-vmin').value)||0;
   const vmax = parseFloat(document.getElementById('f-vmax').value)||Infinity;
@@ -477,7 +511,7 @@ function filtrar(){
     if(tabAtiva && i.categoria!==tabAtiva) return false;
     if(cidadeSel && (i.cidade||'João Pessoa')!==cidadeSel) return false;
     const bairroNorm = normalizarBairro(i.bairro);
-    if(bairrosSel.length>0 && !bairrosSel.includes(bairroNorm)) return false;
+    if(bairrosSelecionados.length>0 && !bairrosSelecionados.includes(bairroNorm)) return false;
     if(busca && !i.nome.toLowerCase().includes(busca) && !(i.construtora||'').toLowerCase().includes(busca) && !(i.bairro||'').toLowerCase().includes(busca)) return false;
     if(quartos){
       if(quartos==='4'){ if(!i.quartos||parseInt(i.quartos)<4) return false; }
