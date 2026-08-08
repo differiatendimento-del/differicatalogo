@@ -55,7 +55,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
 .stab{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s;background:transparent;color:var(--cinza3)}
 .stab:hover{color:var(--azul2)}
 .stab.on{background:var(--azul);color:#fff}
-.search-fields{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:12px;align-items:end}
+.search-fields{display:grid;grid-template-columns:repeat(4,1fr) repeat(3,1fr) auto;gap:12px;align-items:end}
 .sf-label{font-size:11px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
 .sf-input,.sf-select{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--cinza2);font-family:'Inter',sans-serif;font-size:13px;color:var(--texto);background:#fff;outline:none;transition:border-color .15s}
 .sf-input:focus,.sf-select:focus{border-color:var(--azul3)}
@@ -96,6 +96,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
 .card-cat{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;z-index:2}
 .cat-pronto{background:#16A34A;color:#fff}
 .cat-lancamento{background:var(--dourado);color:var(--azul)}
+.cat-aluguel{background:#7C3AED;color:#fff}
 .card-fav{position:absolute;top:10px;right:10px;width:30px;height:30px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;border:none;font-size:14px;backdrop-filter:blur(4px)}
 .card-body{padding:14px 16px}
 .card-nome{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--texto);margin-bottom:3px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -182,7 +183,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* RESPONSIVE */
-@media(max-width:900px){.search-fields{grid-template-columns:1fr 1fr}}
+@media(max-width:1200px){.search-fields{grid-template-columns:repeat(4,1fr)}} @media(max-width:700px){.search-fields{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){
   .hero{padding:28px 16px 40px}.hero-title{font-size:22px}
   .search-box{padding:14px}.search-fields{grid-template-columns:1fr}
@@ -214,18 +215,27 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
 </header>
 
 <div class="hero">
-  <div class="hero-title">Encontre seu imóvel em<br><span>João Pessoa e Cabedelo</span></div>
+  <div class="hero-title">Vem viver<br><span>de praia</span> 🌊</div>
   <div class="hero-sub">Catálogo exclusivo para a equipe Differi</div>
   <div class="search-box">
     <div class="search-tabs">
       <button class="stab on" onclick="setTab('',this)">Todos</button>
       <button class="stab" onclick="setTab('lancamento',this)">🔥 Lançamentos</button>
       <button class="stab" onclick="setTab('pronto',this)">🏠 Prontos</button>
+      <button class="stab" onclick="setTab('aluguel',this)">🔑 Aluguel</button>
     </div>
     <div class="search-fields">
       <div>
-        <span class="sf-label">Bairro</span>
-        <select class="sf-select" id="f-bairro" onchange="render()"><option value="">Todos os bairros</option></select>
+        <span class="sf-label">Cidade</span>
+        <select class="sf-select" id="f-cidade" onchange="popularBairrosFiltro();render()">
+          <option value="">Todas as cidades</option>
+          <option value="João Pessoa">João Pessoa</option>
+          <option value="Cabedelo">Cabedelo</option>
+        </select>
+      </div>
+      <div>
+        <span class="sf-label">Bairros (múltiplos)</span>
+        <select class="sf-select" id="f-bairro" multiple onchange="render()" style="height:42px;min-height:42px" title="Ctrl+clique para selecionar vários"></select>
       </div>
       <div>
         <span class="sf-label">Quartos</span>
@@ -244,6 +254,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
       <div>
         <span class="sf-label">Valor máximo</span>
         <input class="sf-input" type="number" id="f-vmax" placeholder="R$ máximo" oninput="render()">
+      </div>
+      <div>
+        <span class="sf-label">Ano de entrega</span>
+        <select class="sf-select" id="f-ano" onchange="render()">
+          <option value="">Qualquer ano</option>
+          <option value="pronto">Pronto</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+          <option value="2029">2029</option>
+          <option value="2030">2030+</option>
+        </select>
       </div>
       <div>
         <span class="sf-label">Buscar</span>
@@ -298,7 +321,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
           <select id="c-cidade"><option>João Pessoa</option><option>Cabedelo</option><option>Bayeux</option><option>Conde</option></select>
         </div>
         <div class="fg"><label>Categoria *</label>
-          <select id="c-cat"><option value="lancamento">🔥 Lançamento / Na planta</option><option value="pronto">🏠 Pronto para morar</option></select>
+          <select id="c-cat"><option value="lancamento">🔥 Lançamento / Na planta</option><option value="pronto">🏠 Pronto para morar</option><option value="aluguel">🔑 Para Alugar</option></select>
         </div>
         <div class="fg"><label>Construtora</label><input id="c-const" placeholder="Ex: H-Station"></div>
         <div class="fg"><label>Preço (R$)</label><input type="number" id="c-preco" placeholder="450000"></div>
@@ -397,20 +420,45 @@ function atualizarStats(){
   const tot = imoveis.length;
   const lanc = imoveis.filter(i=>i.categoria==='lancamento').length;
   const pron = imoveis.filter(i=>i.categoria==='pronto').length;
-  const bairros = new Set(imoveis.map(i=>i.bairro).filter(Boolean)).size;
+  const bairros = new Set(imoveis.map(i=>normalizarBairro(i.bairro)).filter(Boolean)).size;
   document.getElementById('st-total').textContent=tot;
   document.getElementById('st-lanc').textContent=lanc;
   document.getElementById('st-pronto').textContent=pron;
   document.getElementById('st-bairros').textContent=bairros;
 }
 
+function normalizarBairro(b){
+  if(!b) return b;
+  // Normalize case: capitalize each word
+  return b.toLowerCase().replace(/(?:^|\s|-)\S/g, c=>c.toUpperCase())
+    .replace(/\bDe\b/g,'de').replace(/\bDo\b/g,'do').replace(/\bDa\b/g,'da')
+    .replace(/\bDos\b/g,'dos').replace(/\bDas\b/g,'das')
+    .replace(/\bE\b/g,'e').replace(/\bNo\b/g,'no').replace(/\bNa\b/g,'na');
+}
+
+const BAIRROS_JOAO_PESSOA = ['Aeroclube','Altiplano','Bancários','Bessa','Brisamar','Cabo Branco','Castelo Branco','Colibris','Estados','Geisel','Jardim Cidade Universitária','Jardim Luna','Jardim Oceania','Manaíra','Mangabeira','Miramar','Muçumagro','Pedro Gondim','Portal do Sol','Seixas','Tambaú','Tambauzinho','Torre','Valentina'];
+const BAIRROS_CABEDELO = ['Areia Dourada','Camboinha','Formosa','Intermares','Jacaré','Jardim Camboinha','Poço','Ponta de Campina','Ponta de Matos'];
+
 function popularBairros(){
-  const bairros = [...new Set(imoveis.map(i=>i.bairro).filter(Boolean))].sort();
-  const sel = document.getElementById('f-bairro');
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">Todos os bairros</option>' + bairros.map(b=>`<option${b===cur?' selected':''}>${b}</option>`).join('');
+  popularBairrosFiltro();
   const dl = document.getElementById('bairros-dl');
-  if(dl) dl.innerHTML = bairros.map(b=>`<option value="${b}">`).join('');
+  const todos = [...new Set(imoveis.map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
+  if(dl) dl.innerHTML = todos.map(b=>`<option value="${b}">`).join('');
+}
+
+function popularBairrosFiltro(){
+  const cidade = document.getElementById('f-cidade')?.value || '';
+  const sel = document.getElementById('f-bairro');
+  
+  let bairros;
+  if(cidade === 'João Pessoa'){
+    bairros = [...new Set(imoveis.filter(i=>(i.cidade||'João Pessoa')==='João Pessoa').map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
+  } else if(cidade === 'Cabedelo'){
+    bairros = [...new Set(imoveis.filter(i=>i.cidade==='Cabedelo').map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
+  } else {
+    bairros = [...new Set(imoveis.map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
+  }
+  sel.innerHTML = bairros.map(b=>`<option value="${b}">${b}</option>`).join('');
 }
 
 // ═══════════════════════════
@@ -418,22 +466,38 @@ function popularBairros(){
 // ═══════════════════════════
 function filtrar(){
   const busca = document.getElementById('f-busca').value.toLowerCase();
-  const bairro = document.getElementById('f-bairro').value;
+  const cidadeSel = document.getElementById('f-cidade')?.value || '';
+  const bairroSel = document.getElementById('f-bairro');
+  const bairrosSel = Array.from(bairroSel.selectedOptions).map(o=>o.value).filter(Boolean);
   const quartos = document.getElementById('f-quartos').value;
   const vmin = parseFloat(document.getElementById('f-vmin').value)||0;
   const vmax = parseFloat(document.getElementById('f-vmax').value)||Infinity;
+  const ano = document.getElementById('f-ano').value;
   return imoveis.filter(i=>{
     if(tabAtiva && i.categoria!==tabAtiva) return false;
-    if(bairro && i.bairro!==bairro) return false;
+    if(cidadeSel && (i.cidade||'João Pessoa')!==cidadeSel) return false;
+    const bairroNorm = normalizarBairro(i.bairro);
+    if(bairrosSel.length>0 && !bairrosSel.includes(bairroNorm)) return false;
     if(busca && !i.nome.toLowerCase().includes(busca) && !(i.construtora||'').toLowerCase().includes(busca) && !(i.bairro||'').toLowerCase().includes(busca)) return false;
     if(quartos){
-      const q = parseInt(i.quartos);
-      if(quartos==='4'){ if(!q||q<4) return false; }
+      if(quartos==='4'){ if(!i.quartos||parseInt(i.quartos)<4) return false; }
       else{ if(!i.quartos||!i.quartos.includes(quartos)) return false; }
     }
     if(i.preco){
       if(i.preco<vmin||i.preco>vmax) return false;
     } else if(vmin>0) return false;
+    if(ano && i.entrega){
+      if(ano==='pronto' && !i.entrega.toLowerCase().includes('pronto')) return false;
+      if(ano!=='pronto'){
+        const anoNum = parseInt(ano);
+        if(ano==='2030'){
+          const entAno = parseInt((i.entrega.match(/\d{4}/)||[])[0]);
+          if(!entAno||entAno<2030) return false;
+        } else {
+          if(!i.entrega.includes(ano)) return false;
+        }
+      }
+    } else if(ano && !i.entrega) return false;
     return true;
   });
 }
@@ -453,7 +517,7 @@ function render(){
     const porBairro = agruparPorBairro(lista);
     main.innerHTML = renderBairros(porBairro);
   } else {
-    const cats = [{k:'lancamento',l:'🔥 Lançamentos / Na planta'},{k:'pronto',l:'🏠 Prontos para morar'}];
+    const cats = [{k:'lancamento',l:'🔥 Lançamentos / Na planta'},{k:'pronto',l:'🏠 Prontos para morar'},{k:'aluguel',l:'🔑 Para Alugar'}];
     let html = '';
     cats.forEach(c=>{
       const sub = lista.filter(i=>i.categoria===c.k);
@@ -473,7 +537,7 @@ function render(){
 
 function agruparPorBairro(lista){
   const m = {};
-  lista.forEach(i=>{ const b=i.bairro||'Outros'; if(!m[b])m[b]=[]; m[b].push(i); });
+  lista.forEach(i=>{ const b=normalizarBairro(i.bairro)||'Outros'; if(!m[b])m[b]=[]; m[b].push(i); });
   return Object.entries(m).sort(([a],[b])=>a.localeCompare(b));
 }
 
@@ -485,7 +549,7 @@ function renderBairros(entries){
     </div>`).join('');
 }
 
-function labelCat(c){ return c==='pronto'?'Pronto':'Lançamento'; }
+function labelCat(c){ return c==='pronto'?'Pronto':c==='aluguel'?'Aluguel':'Lançamento'; }
 
 function fotoURL(i){
   const f = i.foto_url||(i.fotos&&i.fotos[0])||null;
@@ -513,7 +577,7 @@ function cardHTML(i){
     </div>
     <div class="card-body">
       <div class="card-nome">${i.nome}</div>
-      <div class="card-bairro">📍 ${i.bairro||''}</div>
+      <div class="card-bairro">📍 ${normalizarBairro(i.bairro)||''}</div>
       ${i.construtora?`<div class="card-const">${i.construtora}</div>`:''}
       ${chips?`<div class="card-meta">${chips}</div>`:''}
       ${preco?`<div class="card-preco">${preco} <small>a partir de</small></div>`:'<div style="height:6px"></div>'}
