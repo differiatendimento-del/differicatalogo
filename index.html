@@ -235,7 +235,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
     <div class="search-fields">
       <div>
         <span class="sf-label">Cidade</span>
-        <select class="sf-select" id="f-cidade" onchange="popularBairrosFiltro();renderChips();render()">
+        <select class="sf-select" id="f-cidade" onchange="popularBairrosFiltro();render()">
           <option value="">Todas as cidades</option>
           <option value="João Pessoa">João Pessoa</option>
           <option value="Cabedelo">Cabedelo</option>
@@ -419,12 +419,64 @@ async function carregarDados(){
   document.getElementById('main-content').innerHTML='<div class="loading"><div class="spinner"></div><p>Carregando catálogo Differi...</p></div>';
   try{
     imoveis = await sb('imoveis?order=nome.asc&ativo=eq.true&select=*');
+    popularBairros();
     atualizarStats();
     render();
-    setTimeout(()=>{ popularBairros(); renderChips(); }, 50);
   }catch(e){
     document.getElementById('main-content').innerHTML=`<div class="empty"><p>❌ Erro: ${e.message}</p></div>`;
   }
+}
+
+function atualizarStats(){
+  const tot = imoveis.length;
+  const lanc = imoveis.filter(i=>i.categoria==='lancamento').length;
+  const pron = imoveis.filter(i=>i.categoria==='pronto').length;
+  const bairros = new Set(imoveis.map(i=>normalizarBairro(i.bairro)).filter(Boolean)).size;
+  document.getElementById('st-total').textContent=tot;
+  document.getElementById('st-lanc').textContent=lanc;
+  document.getElementById('st-pronto').textContent=pron;
+  document.getElementById('st-bairros').textContent=bairros;
+}
+
+function normalizarBairro(b){
+  if(!b) return b;
+  return b.replace(/\b\w/g, c=>c.toUpperCase());
+}
+
+let bairrosSelecionados = [];
+
+function getBairros(){
+  if(!imoveis||!imoveis.length) return [];
+  const cidade = document.getElementById('f-cidade')?.value||'';
+  let lista = imoveis;
+  if(cidade) lista = lista.filter(i=>(i.cidade||'João Pessoa')===cidade);
+  return [...new Set(lista.map(i=>normalizarBairro(i.bairro)).filter(Boolean))].sort();
+}
+
+function popularBairros(){
+  popularBairrosFiltro();
+  const dl = document.getElementById('bairros-dl');
+  if(dl) dl.innerHTML = getBairros().map(b=>`<option value="${b}">`).join('');
+}
+
+function popularBairrosFiltro(){
+  const bairros = getBairros();
+  bairrosSelecionados = bairrosSelecionados.filter(b=>bairros.includes(b));
+  const sel = document.getElementById('f-bairro-sel');
+  if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Todos os bairros</option>' + 
+    bairros.map(b=>`<option value="${b}"${b===cur?' selected':''}>${b}</option>`).join('');
+}
+
+function onBairroChange(){
+  render();
+}
+
+function limparBairros(){
+  const sel = document.getElementById('f-bairro-sel');
+  if(sel) sel.value = '';
+  render();
 }
 
 function atualizarStats(){
@@ -463,39 +515,7 @@ function popularBairros(){
 }
 
 function popularBairrosFiltro(){
-  bairrosSelecionados = bairrosSelecionados.filter(b=>getBairros().includes(b));
-  renderChips();
-}
-
-function renderChips(){
-  const container = document.getElementById('bairro-chips');
-  if(!container) return;
-  const bairros = getBairros();
-  if(!bairros.length){ container.innerHTML='<span style="font-size:12px;color:var(--cinza3)">Carregando bairros...</span>'; return; }
-  container.innerHTML = bairros.map((b,i)=>{
-    const on = bairrosSelecionados.includes(b);
-    return `<button class="bairro-chip${on?' on':''}" onclick="toggleBairro(${i})">${b}</button>`;
-  }).join('');
-  window._bairrosList = bairros;
-  const btn = document.getElementById('bairro-clear-btn');
-  if(btn) btn.style.display = bairrosSelecionados.length>0?'inline-flex':'none';
-}
-
-function toggleBairro(i){
-  const b = (window._bairrosList||[])[i];
-  if(!b) return;
-  const idx = bairrosSelecionados.indexOf(b);
-  if(idx>=0) bairrosSelecionados.splice(idx,1);
-  else bairrosSelecionados.push(b);
-  renderChips();
-  render();
-}
-
-function limparBairros(){
-  bairrosSelecionados=[];
-  renderChips();
-  render();
-}
+  bairrosSelecionados = 
 
 // ═══════════════════════════
 // RENDER
@@ -503,6 +523,7 @@ function limparBairros(){
 function filtrar(){
   const busca = document.getElementById('f-busca').value.toLowerCase();
   const cidadeSel = document.getElementById('f-cidade')?.value || '';
+  const bairroSel = document.getElementById('f-bairro-sel')?.value || '';
   const quartos = document.getElementById('f-quartos').value;
   const vmin = parseFloat(document.getElementById('f-vmin').value)||0;
   const vmax = parseFloat(document.getElementById('f-vmax').value)||Infinity;
@@ -510,8 +531,7 @@ function filtrar(){
   return imoveis.filter(i=>{
     if(tabAtiva && i.categoria!==tabAtiva) return false;
     if(cidadeSel && (i.cidade||'João Pessoa')!==cidadeSel) return false;
-    const bairroNorm = normalizarBairro(i.bairro);
-    if(bairrosSelecionados.length>0 && !bairrosSelecionados.includes(bairroNorm)) return false;
+    if(bairroSel && normalizarBairro(i.bairro)!==bairroSel) return false;
     if(busca && !i.nome.toLowerCase().includes(busca) && !(i.construtora||'').toLowerCase().includes(busca) && !(i.bairro||'').toLowerCase().includes(busca)) return false;
     if(quartos){
       if(quartos==='4'){ if(!i.quartos||parseInt(i.quartos)<4) return false; }
