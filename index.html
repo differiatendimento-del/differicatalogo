@@ -201,7 +201,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--texto);min-
       </div>
       <div>
         <span class="sf-label">Bairro</span>
-        <select class="sf-select" id="f-bairro-sel" onchange="render()">
+        <select class="sf-select" id="f-bairro-sel" onchange="render()" onfocus="popularBairrosFiltro()">
           <option value="">Todos os bairros</option>
         </select>
       </div>
@@ -350,6 +350,7 @@ async function carregarDados(){
   try{
     imoveis=await sb('imoveis?order=nome.asc&ativo=eq.true&select=*');
     popularBairros();
+    popularBairrosFiltro();
     atualizarStats();
     render();
   }catch(e){
@@ -382,6 +383,9 @@ function popularBairrosFiltro(){
   if(!sel)return;
   const cur=sel.value;
   sel.innerHTML='<option value="">Todos os bairros</option>'+bairros.map(b=>`<option value="${b}"${b===cur?' selected':''}>${b}</option>`).join('');
+  // Also populate the datalist for cadastro
+  const dl=document.getElementById('bairros-dl');
+  if(dl)dl.innerHTML=bairros.map(b=>`<option value="${b}">`).join('');
 }
 
 function atualizarStats(){
@@ -584,24 +588,73 @@ function abrirCad(id){
 function fecharCad(){document.getElementById('ov-cad').classList.remove('open');editId=null;}
 
 function triggerPhoto(slot){photoSlotTarget=slot;document.getElementById('photo-input').click();}
-function handlePhotoUpload(e){
+
+async function handlePhotoUpload(e){
   const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    cadPhotos[photoSlotTarget]=ev.target.result;
-    const slot=document.getElementById('ps'+photoSlotTarget);
-    slot.innerHTML=`<img src="${ev.target.result}"><button class="del-btn" onclick="removerFoto(${photoSlotTarget},event)">×</button>`;
-  };
-  reader.readAsDataURL(file);
+  const slot=document.getElementById('ps'+photoSlotTarget);
+  slot.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:11px;color:var(--cinza3)">Enviando...</div>';
+  
+  try{
+    // Upload to Supabase Storage
+    const ext=file.name.split('.').pop();
+    const fileName=`foto_${Date.now()}_${photoSlotTarget}.${ext}`;
+    
+    const r=await fetch(`${SB_URL}/storage/v1/object/imoveis-fotos/${fileName}`,{
+      method:'POST',
+      headers:{
+        'apikey':SB_KEY,
+        'Authorization':'Bearer '+SB_KEY,
+        'Content-Type':file.type,
+        'x-upsert':'true'
+      },
+      body:file
+    });
+    
+    if(!r.ok){
+      const err=await r.text();
+      throw new Error(err);
+    }
+    
+    // Get public URL
+    const publicURL=`${SB_URL}/storage/v1/object/public/imoveis-fotos/${fileName}`;
+    cadPhotos[photoSlotTarget]=publicURL;
+    
+    // Update preview slot
+    slot.innerHTML=`<img src="${publicURL}"><button class="del-btn" onclick="removerFoto(${photoSlotTarget},event)">×</button>`;
+    
+    // Also update the URL input field
+    const ids=['c-foto1','c-foto2','c-foto3','c-foto4','c-foto5'];
+    if(ids[photoSlotTarget])document.getElementById(ids[photoSlotTarget]).value=publicURL;
+    
+    toast('✅ Foto enviada!');
+  }catch(err){
+    slot.innerHTML='<span class="add-icon">+</span>';
+    toast('❌ Erro ao enviar foto: '+err.message);
+  }
   e.target.value='';
 }
-function removerFoto(slot,e){e.stopPropagation();cadPhotos[slot]=null;document.getElementById('ps'+slot).innerHTML='<span class="add-icon">+</span>';}
+
+function removerFoto(slot,e){
+  e.stopPropagation();
+  cadPhotos[slot]=null;
+  document.getElementById('ps'+slot).innerHTML='<span class="add-icon">+</span>';
+  const ids=['c-foto1','c-foto2','c-foto3','c-foto4','c-foto5'];
+  if(ids[slot])document.getElementById(ids[slot]).value='';
+}
+
 function previewFoto(slot,url){
   const s=document.getElementById('ps'+slot);if(!s)return;
   if(url)s.innerHTML=`<img src="${url}" onerror="this.style.display='none'"><button class="del-btn" onclick="clearFotoUrl(${slot},event)">×</button>`;
   else s.innerHTML='<span class="add-icon">+</span>';
 }
-function clearFotoUrl(slot,e){e.stopPropagation();const ids=['c-foto1','c-foto2','c-foto3','c-foto4'];if(ids[slot])document.getElementById(ids[slot]).value='';document.getElementById('ps'+slot).innerHTML='<span class="add-icon">+</span>';}
+
+function clearFotoUrl(slot,e){
+  e.stopPropagation();
+  const ids=['c-foto1','c-foto2','c-foto3','c-foto4','c-foto5'];
+  if(ids[slot])document.getElementById(ids[slot]).value='';
+  cadPhotos[slot]=null;
+  document.getElementById('ps'+slot).innerHTML='<span class="add-icon">+</span>';
+}
 
 async function salvar(){
   const nome=document.getElementById('c-nome').value.trim();
